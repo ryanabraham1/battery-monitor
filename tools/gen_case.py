@@ -6,7 +6,6 @@
 Parts (all print without supports, flat face on the bed, in the orientation they are saved):
     node_base.stl   tray the PCB sits in, with two screw-down ears
     node_lid.stl    cover, saved upside down (print as-is)
-    nfc_holder.stl  shallow tray for a PN532 breakout; the tag is read through its floor
     pi_tray.stl     open tray for the Raspberry Pi + CAN HAT
 
 Four M3x16 screws go up through the base and the PCB and self-tap into posts in the lid.
@@ -85,10 +84,8 @@ OPENINGS = [
     ("bottom", 81.07, 17.0, 0.4, 14.2),  # RJ45 J10
     ("left", 10.0, 11.0, 0.0, 11.0),     # BATT- (sized for 6-8 AWG)
     ("left", 27.0, 11.0, 0.0, 11.0),     # BATT+
-    ("left", 43.0, 5.0, 0.0, 7.0),       # thermostat lead (J13)
     ("right", 13.0, 9.5, 0.0, 9.5),      # CHG+
     ("right", 30.0, 9.5, 0.0, 9.5),      # CHG-
-    ("right", 52.0, 12.0, 0.0, 5.0),     # PN532 6-wire lead
     ("top", 33.0, 11.0, 0.0, 11.0),      # LOAD-
     ("top", 57.0, 11.0, 0.0, 11.0),      # LOAD+
 ]
@@ -154,9 +151,9 @@ def node_lid():
                                ("CHG +", 97, 13, 4.2, "right"), ("CHG −", 97, 30, 4.2, "right"),
                                ("LOAD −", 33, 4.5, 4.0, "center"), ("LOAD +", 57, 4.5, 4.0, "center"), ("FUSE 60A", 46, 27, 3.6, "left"),
                                ("USB", 41, 75.5, 3.6, "center"), ("CAN", 58.57, 75.5, 3.6, "center"),
-                               ("CAN", 81.07, 75.5, 3.6, "center"), ("NFC", 97, 52, 3.6, "right"),
+                               ("CAN", 81.07, 75.5, 3.6, "center"),
                                ("BOOT", 33.5, 56, 3.0, "left"), ("RST", 33.5, 64, 3.0, "left"),
-                               ("TSW", 3, 43, 3.0, "left"), ("FRC BATTERY IR NODE 120A", 52, 47, 4.4, "center")]:
+                               ("FRC BATTERY IR NODE 120A", 52, 47, 4.4, "center")]:
         m -= text(s, x, BH - py, size, d, Z_TOP, al)
     return m
 
@@ -185,24 +182,8 @@ def pcb_mock():
     parts.append(pbox(36.5, 45.5, 72.6, 80.0, z, z + 3.4))      # USB-C
     for x, py in [(11, 10), (33, 10), (57, 10), (91, 13), (91, 30)]:
         parts.append(pcyl(x, py, 10.0, z, z + 9.0))             # M4 lug + screw head / nut
-    parts.append(pbox(87.2, 90.8, 45.2, 61.5, z, z + 17.0))     # PN532 header with Dupont housings
-    parts.append(pbox(35.0, 43.5, 41.6, 48.4, z, z + 11.0))     # JST-XH + plug (thermostat)
     parts.append(pbox(3.2, 11.9, 37.2, 40.8, z, z + 9.0))       # UART header
     return parts
-
-
-def nfc_holder(bw=42.7, bh=40.4):
-    """PN532 'V3' breakout tray. Sizes are for the common red 42.7 x 40.4 mm module - measure yours."""
-    g, w, fl, h = 0.4, 2.0, 1.2, 7.0
-    m = box(-g - w, bw + g + w, -g - w, bh + g + w, 0, h) - box(-g, bw + g, -g, bh + g, fl, h + 1)
-    m -= box(bw / 2 - 11, bw / 2 + 11, bh - 1, bh + g + w + 1, fl + 1.6, h + 1)   # header / wire exit
-    for y in (bh * 0.25, bh * 0.75):                                              # cable-tie slots across the board
-        m -= box(-g - w - 1, bw + g + w + 1, y - 2, y + 2, h - 2.2, h + 1)
-    for side in (-1, 1):
-        ex0, ex1 = (-g - w - 11, -g - w) if side < 0 else (bw + g + w, bw + g + w + 11)
-        m += box(ex0 - (0.5 if side > 0 else 0), ex1 + (0.5 if side < 0 else 0), bh / 2 - 7, bh / 2 + 7, 0, 3.0)
-        m -= cyl((ex0 + ex1) / 2, bh / 2, EAR_HOLE, -1, 4)
-    return m
 
 
 def pi_tray():
@@ -318,7 +299,7 @@ def main():
 
     # the lid is saved upside down so its flat top is on the bed
     lid_print = lid.rotate([180, 0, 0]).translate([0, BH, Z_TOP])
-    parts = [("node_base", base), ("node_lid", lid_print), ("nfc_holder", nfc_holder()), ("pi_tray", pi_tray())]
+    parts = [("node_base", base), ("node_lid", lid_print), ("pi_tray", pi_tray())]
     for name, m in parts:
         bb = m.bounding_box()
         solid = len(m.decompose()) == 1 and not m.is_empty()
@@ -331,7 +312,6 @@ def main():
              ("Assembled, from above", tris_of(base + lid), 62, -70),
              ("node_base.stl", tris_of(base), 45, -30),
              ("node_lid.stl (as printed, top face down)", tris_of(lid_print), 45, -30),
-             ("nfc_holder.stl", tris_of(d["nfc_holder"]), 45, -30),
              ("pi_tray.stl", tris_of(d["pi_tray"]), 45, -30)], os.path.join(OUT, "preview.png"))
     print("OK" if ok else "CHECK FAILED")
     sys.exit(0 if ok else 1)

@@ -38,7 +38,7 @@ All stock figures were read live from JLCPCB's parts library on 2026-11-14 (`too
 
 | Block | Part | LCSC | Stock | Reasoning |
 |---|---|---|---|---|
-| MCU | ESP32-S3-WROOM-1-N8 | C2913198 | 6 942 | As specified. Built-in TWAI (CAN) and native USB, so no USB-UART bridge. Radio is simply never initialised. |
+| MCU | ESP32-S3-WROOM-1-N4 | C2913198 | 6 942 | As specified. Built-in TWAI (CAN) and native USB, so no USB-UART bridge. Radio is simply never initialised. |
 | CAN | SN65HVD230DR | C12084 | 167 518 | 3.3 V transceiver named in the brief; JLC "preferred" part. |
 | CAN connector | 2× Connfly DS1128-09 RJ45 | C86578 | 5 087 | **RJ45 over JST-XH**: ordinary Cat5 patch leads give a twisted pair, a latch and any length off the shelf. Pinout follows CANopen CiA 303-1 (1 = CAN_H, 2 = CAN_L, 3/7 = GND). Not a close call. |
 | Termination | 120 Ω + 2-pin jumper | C22787 | — | Fit the jumper on the two end nodes only. |

@@ -1,7 +1,7 @@
 # FRC Battery IR Monitor Node — hardware rev B (120 A pulse)
 
 An inline node that sits between a charger and a 12 V FRC battery (charger → node → battery).
-It identifies the battery by NFC tag, measures internal resistance with a ~110 A / 100 ms pulse
+It measures internal resistance with a ~110 A / 100 ms pulse
 load, and reports to a pit hub over wired CAN. No Wi-Fi or Bluetooth is used.
 
 ![3D render of the top of the board](renders/3d_top.png)
@@ -22,7 +22,7 @@ or tested on real hardware yet: the firmware compiles and the hub passes a simul
 - ESP32-S3 (radio unused), INA226 current/voltage monitor with a 0.5 mΩ Kelvin-sensed shunt
 - Charger relay on its normally-closed contact, so an unpowered node leaves the charger connected, with its own 10 A fuse
 - Pulse-load MOSFET with a hardware one-shot that cuts the load after ~220 ms even if firmware hangs
-- Two RJ45 jacks for daisy-chained CAN, USB-C for flashing and serial, header for a PN532 NFC module
+- Two RJ45 jacks for daisy-chained CAN, USB-C for flashing and serial
 - Bolt-down lug pads for BATT±, CHG±, LOAD± (off-board 0.1 Ω load bank) and two M5 studs that carry a 60 A MIDI fuse
 
 | Top copper | Bottom copper |
@@ -45,7 +45,7 @@ Full schematic: [hw/ir_node_schematic.pdf](hw/ir_node_schematic.pdf).
 | `renders/` | PNG previews of each copper layer and 3D views |
 | `firmware/` | ESP32-S3 node firmware (PlatformIO, Arduino framework) |
 | `hub/` | Raspberry Pi hub: CAN logger, SQLite history, web page, installer, simulated node and test |
-| `case/` | Printable STLs: node base and lid, NFC reader holder, Pi tray |
+| `case/` | Printable STLs: node base and lid, Pi tray |
 | `tools/` | The Python scripts that generate everything (run with KiCad's bundled Python) |
 
 ## Ordering (JLCPCB)
@@ -64,10 +64,8 @@ manufacturer part numbers as well as LCSC numbers.
 The PCB is one part of the system. The complete list with quantities, notes and rough prices is
 in [docs/setup.md](docs/setup.md#1-everything-to-buy). In short:
 
-- **Per node:** two 0.2 Ω 100 W resistors, normally-closed thermostat, 60 A MIDI fuse, PN532 NFC
-  module, two SB50 connectors, 6, 8 and 10 AWG wire, ring terminals, M4 and M5 hardware,
+- **Per node:** two 0.2 Ω 100 W resistors, 60 A MIDI fuse, two SB50 connectors, 6, 8 and 10 AWG wire, ring terminals, M4 and M5 hardware,
   an Ethernet patch cable, four M3 × 16 screws, printed case
-- **Per battery:** one NTAG NFC sticker
 - **Hub (one per pit):** Raspberry Pi (3B+, 4 or 5), MCP2515 CAN HAT, microSD card, Pi power
   supply, one patch cable cut in half, printed tray
 

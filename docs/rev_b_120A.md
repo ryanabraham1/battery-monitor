@@ -1,7 +1,7 @@
 # Rev B: 120 A pulse load
 
 Rev B raises the test pulse from about 12 A to about 105–125 A (depending on the load bank), so
-the battery is measured at a current close to what a robot actually draws. The logic, CAN, NFC,
+the battery is measured at a current close to what a robot actually draws. The logic, CAN,
 USB and supply sections are the same as rev A (`main` branch). Only the high-current path changed.
 
 Nothing here has been built. The numbers below are calculations from datasheet-level figures I
@@ -105,4 +105,4 @@ logic or CCA estimate, only resistance, voltage, a charge estimate and a verdict
 
 The price is a hotter, higher-energy fault case. With rev A a stuck MOSFET dissipates 144 W in
 the resistor; with rev B it is over 1 kW until the fuse opens. Mount the load bank on metal, away
-from anything that burns, and fit the thermostat.
+from anything that burns.

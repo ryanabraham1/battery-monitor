@@ -15,10 +15,6 @@
 #define PIN_I2C0_SDA   8   // INA226
 #define PIN_I2C0_SCL   9
 #define PIN_INA_ALERT  10
-#define PIN_NFC_SDA    11  // PN532 on its own bus
-#define PIN_NFC_SCL    12
-#define PIN_NFC_IRQ    13
-#define PIN_NFC_RST    14
 #define PIN_NTC_FET    2   // ADC1_CH1, on-board NTC next to the MOSFET
 
 // ---- measurement ----
@@ -38,7 +34,6 @@
 // ---- CAN (250 kbit/s, 11-bit IDs, little-endian payloads) ----
 #define CAN_ID_CMD     0x080   // + node id, or exactly 0x080 for "all nodes"
 #define CAN_ID_STATUS  0x100   // + node id, 1 Hz
-#define CAN_ID_UID     0x180   // + node id, on change and every 5 s
 #define CAN_ID_RESULT  0x200   // + node id, sent 3x after each test
 
 enum Cmd : uint8_t { CMD_TEST = 1, CMD_CHARGER = 2, CMD_IDENTIFY = 3, CMD_CLEAR_FAULT = 4 };
@@ -64,8 +59,6 @@ enum Err : uint8_t {
 };
 
 // status flags
-#define FLAG_TAG        0x01
 #define FLAG_CHG_CONN   0x02
-#define FLAG_NFC_OK     0x04
 #define FLAG_INA_OK     0x08
 #define FLAG_RESULT_OK  0x10
