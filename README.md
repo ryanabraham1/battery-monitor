@@ -1,5 +1,39 @@
 # FRC Battery IR Monitor Node — hardware rev A
 
+An inline node that sits between a charger and a 12 V FRC battery (charger → node → battery).
+It identifies the battery by NFC tag, measures internal resistance with a 12 A / 100 ms pulse
+load, and reports to a pit hub over wired CAN. No Wi-Fi or Bluetooth is used.
+
+![3D render of the top of the board](renders/3d_top.png)
+
+**Status:** schematic and layout are complete (ERC and DRC clean) and ready to order. Nothing has
+been built or tested yet, and there is no firmware. See [docs/design.md](docs/design.md) for the
+calculations, the parts that differ from the original brief, and open questions.
+
+## Board at a glance
+
+- 100 × 80 mm, 2 layers, 2 oz copper, four M3 mounting holes
+- ESP32-S3 (radio unused), INA226 current/voltage monitor with a 1 mΩ Kelvin-sensed shunt
+- Charger relay on its normally-closed contact, so an unpowered node leaves the charger connected
+- Pulse-load MOSFET with a hardware one-shot that cuts the load after ~220 ms even if firmware hangs
+- Two RJ45 jacks for daisy-chained CAN, USB-C for flashing and serial, header for a PN532 NFC module
+- Six M4 bolt-down lug pads: BATT±, CHG±, LOAD± (off-board 1 Ω 100 W resistor)
+
+| Top copper | Bottom copper |
+|---|---|
+| ![Top copper layer](renders/top.png) | ![Bottom copper layer](renders/bottom.png) |
+
+| Component placement | Underside (3D) |
+|---|---|
+| ![Component placement](renders/place.png) | ![3D render of the bottom](renders/3d_bottom.png) |
+
+Full schematic: [hw/ir_node_schematic.pdf](hw/ir_node_schematic.pdf). The image below is a partial
+view (the sheet is cropped at the right and bottom).
+
+![Partial view of the schematic](renders/schematic.png)
+
+## Repository layout
+
 | Folder | Contents |
 |---|---|
 | `docs/design.md` | Phase 1 design document: deviations, part choices, calculations, accuracy budget, open questions |
