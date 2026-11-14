@@ -8,3 +8,4 @@ tools/logs/
 .pio/
 .vscode/
 hub/*.db
+logs/
