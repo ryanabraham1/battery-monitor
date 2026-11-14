@@ -6,9 +6,13 @@ load, and reports to a pit hub over wired CAN. No Wi-Fi or Bluetooth is used.
 
 ![3D render of the top of the board](renders/3d_top.png)
 
-**Status:** schematic and layout are complete (ERC and DRC clean) and ready to order. Nothing has
-been built or tested yet, and there is no firmware. See [docs/design.md](docs/design.md) for the
-calculations, the parts that differ from the original brief, and open questions.
+**Status:** schematic and layout are complete (ERC and DRC clean) and ready to order. Node
+firmware, the Raspberry Pi hub software and printable cases are included. Nothing has been built
+or tested on real hardware yet: the firmware compiles and the hub passes a simulated-node test.
+
+- **[docs/setup.md](docs/setup.md): full shopping list (including the Pi and CAN HAT), assembly,
+  flashing, hub install, CAN wiring.** Start here.
+- [docs/design.md](docs/design.md): calculations, parts that differ from the original brief, open questions.
 
 ## Board at a glance
 
@@ -40,6 +44,9 @@ view (the sheet is cropped at the right and bottom).
 | `hw/` | KiCad 9 project: `ir_node.kicad_pro`, `.kicad_sch`, `.kicad_pcb`, schematic PDF, ERC and DRC reports |
 | `fab/` | `ir_node_gerbers.zip` (Gerbers + drill), `ir_node_BOM_JLC.csv`, `ir_node_CPL_JLC.csv`, `ir_node_BOM_full.csv` |
 | `renders/` | PNG previews of each copper layer and 3D views |
+| `firmware/` | ESP32-S3 node firmware (PlatformIO, Arduino framework) |
+| `hub/` | Raspberry Pi hub: CAN logger, SQLite history, web page, installer, simulated node and test |
+| `case/` | Printable STLs: node base and lid, NFC reader holder, Pi tray |
 | `tools/` | The Python scripts that generate everything (run with KiCad's bundled Python) |
 
 ## Ordering (JLCPCB)
@@ -53,14 +60,21 @@ view (the sheet is cropped at the right and bottom).
 PCBWay or any other fab can use the same Gerber zip; give them `ir_node_BOM_full.csv`, which has
 manufacturer part numbers as well as LCSC numbers.
 
-## Off-board items to buy separately
+## What else you need
 
-- 1 Ω 100 W aluminium-clad resistor, bolted to a heatsink or metal plate
-- 15 A ATO blade fuse
-- 10k B3950 NTC probe on a lead with a JST-XH 2-pin plug
-- PN532 NFC breakout and a 6-wire lead
-- M4 screws/nuts and 10 AWG ring lugs ×6, two SB50 pigtails
-- Normally-closed thermostat(s) for the load resistor (see design doc §4.5)
+The PCB is one part of the system. The complete list with quantities, notes and rough prices is
+in [docs/setup.md](docs/setup.md#1-everything-to-buy). In short:
+
+- **Per node:** 1 Ω 100 W resistor, normally-closed thermostat, 15 A blade fuse, PN532 NFC
+  module, NTC probe, two SB50 connectors, 10 and 14 AWG wire, M4 ring terminals and hardware,
+  an Ethernet patch cable, four M3 × 16 screws, printed case
+- **Per battery:** one NTAG NFC sticker
+- **Hub (one per pit):** Raspberry Pi (3B+, 4 or 5), MCP2515 CAN HAT, microSD card, Pi power
+  supply, one patch cable cut in half, printed tray
+
+## Cases
+
+![Printable case parts](case/preview.png)
 
 ## Regenerating
 
@@ -68,4 +82,6 @@ manufacturer part numbers as well as LCSC numbers.
 python tools/gen_sch.py     # schematic from tools/design.py
 python tools/route.py <freerouting.jar>   # place, autoroute, pour
 python tools/gen_fab.py     # BOM, CPL, Gerbers, renders
+python tools/gen_case.py    # case STLs (needs: pip install manifold3d numpy pillow matplotlib)
+python hub/test_hub.py      # hub against a simulated node (needs: pip install python-can)
 ```

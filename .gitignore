@@ -5,3 +5,6 @@ __pycache__/
 fp-info-cache
 hw/route/
 tools/logs/
+.pio/
+.vscode/
+hub/*.db

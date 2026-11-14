@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Battery IR hub</title>
+<style>
+  :root { --bg:#f5f6f8; --card:#fff; --ink:#1b1f24; --dim:#667085; --line:#dfe3e8; --good:#1a7f37; --warn:#b77400; --bad:#c62828; --accent:#2457d6; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#14171b; --card:#1d2127; --ink:#e8eaed; --dim:#98a2b3; --line:#30363d; --good:#4cc36a; --warn:#e3b341; --bad:#ff6b6b; --accent:#7aa2ff; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:16px; background:var(--bg); color:var(--ink); font:15px/1.4 system-ui, sans-serif; }
+  h1 { font-size:20px; margin:0 0 12px; }
+  h2 { font-size:15px; margin:24px 0 8px; color:var(--dim); font-weight:600; text-transform:uppercase; letter-spacing:.04em; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(250px, 1fr)); gap:12px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 14px; }
+  .card.off { opacity:.5; }
+  .card.fault { border-color:var(--bad); }
+  .top { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+  .name { font-weight:600; font-size:16px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .dim { color:var(--dim); font-size:13px; }
+  .big { font-size:30px; font-weight:700; font-variant-numeric:tabular-nums; margin:6px 0 2px; }
+  .good { color:var(--good); } .marginal { color:var(--warn); } .bad { color:var(--bad); }
+  .row { display:flex; gap:14px; flex-wrap:wrap; font-variant-numeric:tabular-nums; }
+  button { font:inherit; padding:6px 12px; border-radius:7px; border:1px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer; }
+  button.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+  .btns { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .wrap { overflow-x:auto; background:var(--card); border:1px solid var(--line); border-radius:10px; }
+  table { border-collapse:collapse; width:100%; min-width:560px; }
+  th, td { text-align:left; padding:8px 12px; border-bottom:1px solid var(--line); white-space:nowrap; }
+  th { color:var(--dim); font-size:13px; font-weight:600; }
+  tr:last-child td { border-bottom:0; }
+  td.num { font-variant-numeric:tabular-nums; }
+  svg.spark { vertical-align:middle; }
+  .err { color:var(--bad); font-size:13px; margin-top:4px; }
+  a { color:var(--accent); }
+  #empty { color:var(--dim); }
+</style>
+</head>
+<body>
+<h1>Battery IR hub</h1>
+
+<h2>Charger stations</h2>
+<div id="nodes" class="grid"></div>
+<p id="empty" hidden>No nodes heard yet. Check the CAN cable, that each end of the bus is terminated, and that <code>can0</code> is up.</p>
+
+<h2>Batteries</h2>
+<div class="wrap"><table>
+  <thead><tr><th>Battery</th><th>Latest IR</th><th>Verdict</th><th>Charge</th><th>Best</th><th>Tests</th><th>Trend</th><th>Last tested</th><th></th></tr></thead>
+  <tbody id="bats"></tbody>
+</table></div>
+<p class="dim">Green below <span id="g"></span> mΩ, red at or above <span id="w"></span> mΩ. Charge % is a rough estimate from resting voltage and reads high just after charging.
+  <a href="/api/export.csv">Download all tests (CSV)</a></p>
+
+<script>
+const $ = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const post = (url, body) => fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+const fmt = (v, d, unit) => v == null ? "–" : v.toFixed(d) + (unit || "");
+
+function spark(vals, lo, hi) {
+  const ns = "http://www.w3.org/2000/svg", w = 90, h = 22;
+  const s = document.createElementNS(ns, "svg");
+  s.setAttribute("class", "spark"); s.setAttribute("width", w); s.setAttribute("height", h);
+  if (vals.length < 2) return s;
+  const mn = Math.min(...vals, lo), mx = Math.max(...vals, hi);
+  const pts = vals.map((v, i) => (2 + i * (w - 4) / (vals.length - 1)).toFixed(1) + "," + (h - 2 - (v - mn) / (mx - mn) * (h - 4)).toFixed(1));
+  const p = document.createElementNS(ns, "polyline");
+  p.setAttribute("points", pts.join(" ")); p.setAttribute("fill", "none"); p.setAttribute("stroke", "currentColor"); p.setAttribute("stroke-width", "1.5");
+  s.appendChild(p);
+  return s;
+}
+
+function render(st) {
+  document.getElementById("g").textContent = st.good_below;
+  document.getElementById("w").textContent = st.warn_below;
+  const nodes = document.getElementById("nodes");
+  nodes.replaceChildren();
+  document.getElementById("empty").hidden = st.nodes.length > 0;
+  for (const n of st.nodes) {
+    const c = $("div", "card" + (n.online ? "" : " off") + (n.fault ? " fault" : ""));
+    const top = $("div", "top");
+    top.append($("div", "name", n.name || (n.uid ? "Tag " + n.uid : "No tag")), $("div", "dim", "Station " + n.id));
+    c.append(top);
+    c.append($("div", "big " + (n.last_verdict || ""), n.last_ir != null ? n.last_ir.toFixed(1) + " mΩ" : "–"));
+    c.append($("div", "dim", n.online ? n.state : "offline"));
+    const row = $("div", "row");
+    row.append($("span", "", fmt(n.volts, 2, " V")), $("span", "", fmt(n.amps, 1, " A")), $("span", "", n.t_batt == null ? "no temp probe" : n.t_batt + " °C"));
+    c.append(row);
+    if (n.last_error) c.append($("div", "err", "Last test failed: " + n.last_error));
+    if (!n.ina_ok) c.append($("div", "err", "Current sensor not responding"));
+    if (!n.nfc_ok) c.append($("div", "dim", "No NFC reader detected"));
+    const b = $("div", "btns");
+    const t = $("button", "primary", "Test now"); t.onclick = () => post("/api/cmd", { node: n.id, cmd: "test" });
+    const i = $("button", "", "Blink LED"); i.onclick = () => post("/api/cmd", { node: n.id, cmd: "identify" });
+    b.append(t, i);
+    if (n.fault) { const x = $("button", "", "Clear fault"); x.onclick = () => post("/api/cmd", { node: n.id, cmd: "clear" }); b.append(x); }
+    c.append(b);
+    nodes.append(c);
+  }
+  const bats = document.getElementById("bats");
+  bats.replaceChildren();
+  for (const b of st.batteries) {
+    const tr = $("tr");
+    tr.append($("td", "", b.name || b.uid));
+    tr.append($("td", "num", fmt(b.ir, 2, " mΩ")));
+    tr.append($("td", b.verdict, b.verdict || "–"));
+    tr.append($("td", "num", b.charge == null ? "–" : b.charge + " %"));
+    tr.append($("td", "num", fmt(b.best, 2, " mΩ")));
+    tr.append($("td", "num", String(b.tests)));
+    const sp = $("td"); sp.append(spark(b.trend, st.good_below - 5, st.warn_below)); tr.append(sp);
+    tr.append($("td", "dim", b.last_ts ? new Date(b.last_ts * 1000).toLocaleString() : "never"));
+    const act = $("td"), r = $("button", "", "Rename");
+    r.onclick = async () => { const nm = prompt("Name for battery " + b.uid, b.name); if (nm != null) { await post("/api/name", { uid: b.uid, name: nm }); tick(); } };
+    act.append(r); tr.append(act);
+    bats.append(tr);
+  }
+}
+
+async function tick() {
+  try { render(await (await fetch("/api/state")).json()); } catch (e) { /* hub restarting; try again next tick */ }
+}
+tick();
+setInterval(tick, 2000);
+</script>
+</body>
+</html>
