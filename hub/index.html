@@ -85,7 +85,7 @@ function render(st) {
     c.append($("div", "big " + (n.last_verdict || ""), n.last_ir != null ? n.last_ir.toFixed(1) + " mΩ" : "–"));
     c.append($("div", "dim", n.online ? n.state : "offline"));
     const row = $("div", "row");
-    row.append($("span", "", fmt(n.volts, 2, " V")), $("span", "", fmt(n.amps, 1, " A")), $("span", "", n.t_batt == null ? "no temp probe" : n.t_batt + " °C"));
+    row.append($("span", "", fmt(n.volts, 2, " V")), $("span", "", fmt(n.amps, 1, " A")));
     c.append(row);
     if (n.last_error) c.append($("div", "err", "Last test failed: " + n.last_error));
     if (!n.ina_ok) c.append($("div", "err", "Current sensor not responding"));

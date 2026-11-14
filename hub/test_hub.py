@@ -42,7 +42,7 @@ def main():
     assert len(st["nodes"]) == 1 and st["nodes"][0]["id"] == 3, st
     n = st["nodes"][0]
     assert n["online"] and n["state"] == "charging" and abs(n["volts"] - 13.15) < 1e-6 and abs(n["amps"] + 4.2) < 1e-6, n
-    assert n["uid"] == "04A1B2C3D4E5F6" and n["t_batt"] == 24, n
+    assert n["uid"] == "04A1B2C3D4E5F6" and n["t_fet"] == 27, n
 
     post("/api/name", {"uid": "04A1B2C3D4E5F6", "name": "Battery 7"})
     post("/api/cmd", {"node": 3, "cmd": "test"})

@@ -41,7 +41,7 @@ static void loadSettings() {
 static State    state = ST_NO_BATT;
 static bool     inaOk = false, nfcOk = false, canOk = false;
 static float    busV = 0, amps = 0;          // filtered; amps > 0 = battery discharging
-static int8_t   tBatt = -128, tFet = -128;   // degC, -128 = no probe
+static int8_t   tFet = -128;                 // MOSFET temperature, degC, -128 = sensor fault
 static uint8_t  uid[7];
 static uint8_t  uidLen = 0;
 static uint8_t  tagMisses = 0;
@@ -193,7 +193,7 @@ static void sendStatus() {
   d[0] = state; d[1] = flags;
   d[2] = mv & 0xFF; d[3] = mv >> 8;
   d[4] = ca & 0xFF; d[5] = (uint16_t)ca >> 8;
-  d[6] = (uint8_t)tBatt; d[7] = (uint8_t)tFet;
+  d[6] = 0x80; d[7] = (uint8_t)tFet;   // byte 6 is reserved
   canSend(CAN_ID_STATUS + nodeId, d);
 }
 
@@ -337,7 +337,7 @@ static void nfcPoll() {
 
 // ---------------------------------------------------------------- console
 static void printStatus() {
-  Serial.printf("node %u  state %u  %.3f V  %+.2f A  batt %d C  fet %d C\n", nodeId, state, busV, amps, tBatt, tFet);
+  Serial.printf("node %u  state %u  %.3f V  %+.2f A  fet %d C\n", nodeId, state, busV, amps, tFet);
   Serial.printf("ina %s  nfc %s  can %s  charger %s\n", inaOk ? "ok" : "MISSING", nfcOk ? "ok" : "not found",
                 canOk ? "ok" : "FAILED", digitalRead(PIN_RELAY_EN) ? "disconnected" : "connected");
   Serial.print("tag ");
@@ -433,7 +433,6 @@ void setup() {
   inaOk = inaInit();
   nfcInit();
   canOk = canInit();
-  analogSetPinAttenuation(PIN_NTC_BATT, ADC_11db);
   analogSetPinAttenuation(PIN_NTC_FET, ADC_11db);
 }
 
@@ -457,7 +456,6 @@ void loop() {
   }
   if (now - tTemp > 1000) {
     tTemp = now;
-    tBatt = readNtc(PIN_NTC_BATT);
     tFet = readNtc(PIN_NTC_FET);
   }
   if (state != ST_SETTLE && state != ST_TEST && now - tNfc > 500) {

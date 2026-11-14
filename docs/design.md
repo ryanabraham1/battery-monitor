@@ -31,7 +31,7 @@ All stock figures were read live from JLCPCB's parts library on 2026-11-14 (`too
  ESP32-S3 ── LOAD_EN ── U5 one-shot (220 ms max) ── U6 gate driver ── Q1 gate
           ── RELAY_EN ── Q2            ── CAN TX/RX ── SN65HVD230 ── 2x RJ45 (daisy-chain)
           ── I2C1 + IRQ/RST ── PN532 header        ── USB-C (native USB serial / flashing)
-          ── ADC ── battery NTC (flying lead), on-board NTC next to Q1     ── RGB LED
+          ── ADC ── on-board NTC next to Q1                              ── 3 status LEDs
 ```
 
 ## 3. Part selection
@@ -145,9 +145,8 @@ Things in the layout I am not sure of, or chose deliberately:
 2. **ESP32 antenna keep-out is removed** and the module's 0.2 mm thermal vias deleted, because the radio
    is never used. Do not reuse this layout for a Wi-Fi/BLE product. (This is also why
    `lib_footprint_mismatch` is ignored in DRC.)
-3. **RGB LED pin order** (R, common anode, G, B) is the usual one for 5 mm common-anode parts, but I
-   could not open the TOGIALED datasheet drawing to confirm it. Worst case the colours are swapped,
-   which firmware can remap — the common pin is the long lead either way.
+3. **Status LEDs** are three separate 0603 parts (red, green, blue) placed by JLC, replacing the
+   5 mm RGB LED of the first draft. They sit on the board under a window in the lid.
 4. **Signal routing is autorouted** (Freerouting). It is electrically correct and DRC-clean but not
    pretty, and USB D+/D− are not length-matched (fine for full-speed USB at this length).
 5. **Solid ground connections** on SMD pads and on the BATT−, CHG−, Q1-source and USB-shell pads.

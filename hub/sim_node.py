@@ -27,7 +27,7 @@ class SimNode:
         self.bus.send(can.Message(arbitration_id=base + self.id, data=data, is_extended_id=False))
 
     def status(self, state=2):
-        self.send(ID_STATUS, struct.pack("<BBHhbb", state, 0x1F, 13150, -420, 24, 27))
+        self.send(ID_STATUS, struct.pack("<BBHhbb", state, 0x1F, 13150, -420, -128, 27))
 
     def send_uid(self):
         self.send(ID_UID, bytes([len(self.uid)]) + self.uid.ljust(7, b"\0"))

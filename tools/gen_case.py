@@ -85,7 +85,7 @@ OPENINGS = [
     ("bottom", 81.07, 17.0, 0.4, 14.2),  # RJ45 J10
     ("left", 10.0, 9.5, 0.0, 9.5),       # BATT+
     ("left", 27.0, 9.5, 0.0, 9.5),       # BATT-
-    ("left", 43.0, 5.0, 0.0, 7.0),       # NTC probe + thermostat leads
+    ("left", 43.0, 5.0, 0.0, 7.0),       # thermostat lead (J13)
     ("right", 13.0, 9.5, 0.0, 9.5),      # CHG+
     ("right", 30.0, 9.5, 0.0, 9.5),      # CHG-
     ("right", 52.0, 12.0, 0.0, 5.0),     # PN532 6-wire lead
@@ -143,8 +143,8 @@ def node_lid():
                   -GAP - 0.1 if hy < 40 else hy, hy if hy < 40 else BH + GAP + 0.1, Z_PCB_TOP + LIP + FIT, Z_LID_IN + 0.1)
         m -= pcyl(hx, hy, SCREW_PILOT, Z_PCB_TOP, Z_PCB_TOP + 14)
     m -= opening_cuts()
-    # top face: LED, fuse window, BOOT / RESET poke holes
-    m -= pcyl(22.4, 36.25, 5.6, Z_LID_IN - 1, Z_TOP + 1)
+    # top face: LED window, fuse window, BOOT / RESET poke holes
+    m -= pbox(18.8, 26.0, 34.4, 39.7, Z_LID_IN - 1, Z_TOP + 1)   # window over the three status LEDs
     m -= pbox(16.0, 37.8, 5.6, 14.4, Z_LID_IN - 1, Z_TOP + 1)
     m -= pcyl(30.0, 56.0, 3.6, Z_LID_IN - 1, Z_TOP + 1)
     m -= pcyl(30.0, 64.0, 3.6, Z_LID_IN - 1, Z_TOP + 1)
@@ -155,7 +155,7 @@ def node_lid():
                                ("USB", 41, 75.5, 3.6, "center"), ("CAN", 58.57, 75.5, 3.6, "center"),
                                ("CAN", 81.07, 75.5, 3.6, "center"), ("NFC", 97, 52, 3.6, "right"),
                                ("BOOT", 33.5, 56, 3.0, "left"), ("RST", 33.5, 64, 3.0, "left"),
-                               ("NTC", 3, 43, 3.0, "left"), ("FRC BATTERY IR NODE", 50, 47, 4.6, "center")]:
+                               ("TSW", 3, 43, 3.0, "left"), ("FRC BATTERY IR NODE", 50, 47, 4.6, "center")]:
         m -= text(s, x, BH - py, size, d, Z_TOP, al)
     return m
 

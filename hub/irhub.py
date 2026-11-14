@@ -60,7 +60,7 @@ class Hub:
         with self._db() as db:
             db.execute("CREATE TABLE IF NOT EXISTS batteries (uid TEXT PRIMARY KEY, name TEXT, first_seen REAL)")
             db.execute("""CREATE TABLE IF NOT EXISTS tests (id INTEGER PRIMARY KEY, ts REAL, uid TEXT, node INTEGER,
-                          ir_mohm REAL, v_open REAL, v_load REAL, i_pulse REAL, temp_c INTEGER, err INTEGER)""")
+                          ir_mohm REAL, v_open REAL, v_load REAL, i_pulse REAL, err INTEGER)""")
 
     def _db(self):
         db = sqlite3.connect(self.db_path, timeout=10)
@@ -90,9 +90,9 @@ class Hub:
         with self.lock:
             n = self.nodes.setdefault(node, {"uid": "", "last": None})
             if base == ID_STATUS:
-                state, flags, mv, ca, tb, tf = struct.unpack("<BBHhbb", d)
+                state, flags, mv, ca, _, tf = struct.unpack("<BBHhbb", d)
                 n.update(seen=now, state=state, flags=flags, volts=mv / 1000, amps=ca / 100,
-                         t_batt=None if tb == -128 else tb, t_fet=None if tf == -128 else tf)
+                         t_fet=None if tf == -128 else tf)
             elif base == ID_UID:
                 ln = min(d[0], 7)
                 n["uid"] = d[1:1 + ln].hex().upper()
@@ -108,13 +108,12 @@ class Hub:
                 ok = ir != 0xFFFF
                 uid = n["uid"] or "untagged-node-%d" % node
                 row = dict(ts=now, uid=uid, node=node, ir_mohm=ir / 100 if ok else None, v_open=vo / 1000,
-                           v_load=vl / 1000, i_pulse=b6 / 10 if ok else None, temp_c=n.get("t_batt"),
-                           err=0 if ok else b6)
+                           v_load=vl / 1000, i_pulse=b6 / 10 if ok else None, err=0 if ok else b6)
                 n["last"] = row
                 with self._db() as db:
                     db.execute("INSERT OR IGNORE INTO batteries (uid, name, first_seen) VALUES (?, '', ?)", (uid, now))
-                    db.execute("""INSERT INTO tests (ts, uid, node, ir_mohm, v_open, v_load, i_pulse, temp_c, err)
-                                  VALUES (:ts, :uid, :node, :ir_mohm, :v_open, :v_load, :i_pulse, :temp_c, :err)""", row)
+                    db.execute("""INSERT INTO tests (ts, uid, node, ir_mohm, v_open, v_load, i_pulse, err)
+                                  VALUES (:ts, :uid, :node, :ir_mohm, :v_open, :v_load, :i_pulse, :err)""", row)
 
     # ---------------------------------------------------------------- CAN out
     def command(self, node, cmd, arg=0):
@@ -132,7 +131,7 @@ class Hub:
                     continue
                 online = now - n["seen"] < NODE_TIMEOUT
                 nodes.append(dict(id=nid, online=online, state=STATES.get(n["state"], "state %d" % n["state"]),
-                                  fault=n["state"] >= 0x80, volts=n["volts"], amps=n["amps"], t_batt=n["t_batt"],
+                                  fault=n["state"] >= 0x80, volts=n["volts"], amps=n["amps"],
                                   t_fet=n["t_fet"], uid=n["uid"], nfc_ok=bool(n["flags"] & 4),
                                   ina_ok=bool(n["flags"] & 8), charger_connected=bool(n["flags"] & 2)))
         with self._db() as db:
@@ -141,7 +140,7 @@ class Hub:
             for r in db.execute("""SELECT b.uid, b.name, COUNT(t.id) AS n, MIN(t.ir_mohm) AS best, MAX(t.ts) AS last_ts
                                    FROM batteries b LEFT JOIN tests t ON t.uid = b.uid AND t.err = 0
                                    GROUP BY b.uid ORDER BY b.name = '', b.name, b.uid"""):
-                last = db.execute("SELECT ir_mohm, v_open, temp_c FROM tests WHERE uid = ? AND err = 0 ORDER BY ts DESC LIMIT 1",
+                last = db.execute("SELECT ir_mohm, v_open FROM tests WHERE uid = ? AND err = 0 ORDER BY ts DESC LIMIT 1",
                                   (r["uid"],)).fetchone()
                 trend = [x["ir_mohm"] for x in db.execute(
                     "SELECT ir_mohm FROM tests WHERE uid = ? AND err = 0 ORDER BY ts DESC LIMIT 30", (r["uid"],))][::-1]
@@ -167,12 +166,12 @@ class Hub:
             db.execute("UPDATE batteries SET name = ? WHERE uid = ?", (name[:40], uid))
 
     def export_csv(self):
-        out = ["time,battery,uid,node,ir_mohm,v_open,v_load,i_pulse,temp_c,error"]
+        out = ["time,battery,uid,node,ir_mohm,v_open,v_load,i_pulse,error"]
         with self._db() as db:
             for r in db.execute("""SELECT t.*, b.name FROM tests t LEFT JOIN batteries b ON b.uid = t.uid ORDER BY t.ts"""):
                 out.append(",".join(str(x if x is not None else "") for x in (
                     time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(r["ts"])), (r["name"] or "").replace(",", " "),
-                    r["uid"], r["node"], r["ir_mohm"], r["v_open"], r["v_load"], r["i_pulse"], r["temp_c"],
+                    r["uid"], r["node"], r["ir_mohm"], r["v_open"], r["v_load"], r["i_pulse"],
                     ERRORS.get(r["err"], "") if r["err"] else "")))
         return "\n".join(out) + "\n"
 

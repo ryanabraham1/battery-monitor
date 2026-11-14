@@ -9,7 +9,7 @@
 #define PIN_LOAD_EN    6   // high = request pulse (one-shot caps it at ~220 ms in hardware)
 #define PIN_LOAD_FB    7   // one-shot output readback, high while the gate driver is enabled
 #define PIN_RELAY_EN   15  // high = relay energised = charger DISCONNECTED (NC contact opens)
-#define PIN_LED_R      16  // LEDs are active low (common anode)
+#define PIN_LED_R      16  // three separate 0603 LEDs, active low
 #define PIN_LED_G      17
 #define PIN_LED_B      18
 #define PIN_I2C0_SDA   8   // INA226
@@ -19,7 +19,6 @@
 #define PIN_NFC_SCL    12
 #define PIN_NFC_IRQ    13
 #define PIN_NFC_RST    14
-#define PIN_NTC_BATT   1   // ADC1_CH0, 10k pull-up to 3V3, external 10k B3950 probe on J12
 #define PIN_NTC_FET    2   // ADC1_CH1, on-board NTC next to the MOSFET
 
 // ---- measurement ----

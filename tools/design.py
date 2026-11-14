@@ -114,7 +114,7 @@ R("R12", "10R", "DRV_OUT", "GATE", B, "C22859")
 R("R13", "10k", "GATE", "GND", B, "C25804")
 
 # ------------------------------------------------------------------ MCU
-B = "5 MCU: ESP32-S3-WROOM-1 (radio unused), USB-C, buttons, LED, NTCs"
+B = "5 MCU: ESP32-S3-WROOM-1 (radio unused), USB-C, buttons, LED, MOSFET NTC"
 P("U1", "RF_Module:ESP32-S3-WROOM-1", "ESP32-S3-WROOM-1-N8", "RF_Module:ESP32-S3-WROOM-1",
   {"1": "GND", "40": "GND", "41": "GND", "2": "+3V3", "3": "ESP_EN",
    "4": "CAN_TX", "5": "CAN_RX", "6": "LOAD_EN", "7": "LOAD_FB", "8": "RELAY_EN",
@@ -122,7 +122,7 @@ P("U1", "RF_Module:ESP32-S3-WROOM-1", "ESP32-S3-WROOM-1-N8", "RF_Module:ESP32-S3
    "15": NC, "16": NC, "17": "I2C0_SCL", "18": "INA_ALERT", "19": "NFC_SDA", "20": "NFC_SCL",
    "21": "NFC_IRQ", "22": "NFC_RST", "23": NC, "24": NC, "25": NC, "26": NC, "27": "BOOT",
    "28": NC, "29": NC, "30": NC, "31": NC, "32": NC, "33": NC, "34": NC, "35": NC,
-   "36": "UART_RX", "37": "UART_TX", "38": "NTC_FET", "39": "NTC_BATT"}, B,
+   "36": "UART_RX", "37": "UART_TX", "38": "NTC_FET", "39": NC}, B,
   "C2913198", "Espressif ESP32-S3-WROOM-1-N8", price=4.92)
 C("C13", "22u 25V", "+3V3", "GND", B, "C45783", C0805, 0.108)
 C("C14", "100n", "+3V3", "GND", B, "C14663")
@@ -144,17 +144,13 @@ R("R19", "5k1", "USB_CC2", "GND", B, "C23186")
 P("U7", "Power_Protection:USBLC6-2SC6", "USBLC6-2SC6", "Package_TO_SOT_SMD:SOT-23-6",
   {"1": "USB_DP", "6": "USB_DP", "3": "USB_DM", "4": "USB_DM", "2": "GND", "5": "VBUS_USB"}, B,
   "C7519", "ST USBLC6-2SC6", price=0.157)
-P("D8", "Device:LED_RAGB", "RGB 5mm common anode", "LED_THT:LED_D5.0mm-4_RGB_Staggered_Pins",
-  {"1": "LEDK_R", "2": "+3V3", "3": "LEDK_G", "4": "LEDK_B"}, B,
-  "C330749", "TOGIALED TJ-L5FYTXHTCYLCRGB-A5", "tht", 0.153)
+LED0603 = "LED_SMD:LED_0603_1608Metric"
+P("D8", "Device:LED", "RED", LED0603, {"1": "LEDK_R", "2": "+3V3"}, B, "C2286", "KENTO KT-0603R", price=0.008)
+P("D9", "Device:LED", "GREEN", LED0603, {"1": "LEDK_G", "2": "+3V3"}, B, "C12624", "KENTO KT-0603G", price=0.012)
+P("D10", "Device:LED", "BLUE", LED0603, {"1": "LEDK_B", "2": "+3V3"}, B, "C2288", "KENTO KT-0603B", price=0.011)
 R("R25", "470R", "LEDK_R", "LED_R", B, "C23179")
 R("R26", "100R", "LEDK_G", "LED_G", B, "C22775")
 R("R27", "100R", "LEDK_B", "LED_B", B, "C22775")
-P("J12", "Connector_Generic:Conn_01x02", "NTC battery (10k B3950 probe)",
-  "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical", {"1": "NTC_BATT", "2": "GND"}, B,
-  "C20079", "XH-2A", "tht", 0.007)
-R("R23", "10k", "+3V3", "NTC_BATT", B, "C25804")
-C("C16", "100n", "NTC_BATT", "GND", B, "C14663")
 P("TH1", "Device:Thermistor_NTC", "10k B3950 1%", R0603, {"1": "NTC_FET", "2": "GND"}, B,
   "C2892547", "KUU KNTC0603/10KF3950", price=0.03)
 R("R24", "10k", "+3V3", "NTC_FET", B, "C25804")
@@ -206,8 +202,8 @@ NOTES = {
          "thermostat on the load resistor cut gate drive (remove R11 when fitted).",
     "4": "LOAD_EN (GPIO6, pulled low) drives B and /CLR of the one-shot: Q follows LOAD_EN but is forced low "
          "after t = R14*C10 ~ 220 ms even if firmware hangs with the pin high. U6 UVLO + R13 keep Q1 off at boot.",
-    "5": "Native USB (GPIO19/20) for flashing + serial CLI. NTC dividers 10k/10k to ADC1 (GPIO1, GPIO2). "
-         "RGB LED is active-low. Wi-Fi/BLE are never initialised in firmware.",
+    "5": "Native USB (GPIO19/20) for flashing + serial CLI. On-board MOSFET NTC divider 10k/10k to ADC1 (GPIO2). "
+         "Status LEDs (red, green, blue 0603) are active-low. Wi-Fi/BLE are never initialised in firmware.",
     "6": "RJ45 pin 1 = CAN_H, 2 = CAN_L, 3 & 7 = GND (CiA 303-1). Both jacks are paralleled for daisy-chain. "
          "Fit JP1 on the two end nodes only. J11 goes to a PN532 breakout by ribbon (3V3, I2C1, IRQ, RST).",
     "7": "Test points per spec; four M3 mounting holes.",
