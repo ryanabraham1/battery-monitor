@@ -74,6 +74,15 @@ def main():
     except urllib.error.HTTPError as e:
         assert e.code == 400
     assert irhub.charge_percent(12.2) == 50 and irhub.charge_percent(11.0) == 0
+    # optional NFC reader: results follow the tag instead of the station
+    tagged = SimNode(can.Bus(interface="virtual", channel="t"), 4, uid=bytes.fromhex("04A1B2C3D4E5F6"))
+    threading.Thread(target=tagged.run, daemon=True).start()
+    time.sleep(1.5)
+    post("/api/cmd", {"node": 4, "cmd": "test"})
+    time.sleep(1.0)
+    st = get("/api/state")
+    assert [n["uid"] for n in st["nodes"]] == ["station-3", "04A1B2C3D4E5F6"], st["nodes"]
+    assert any(b["uid"] == "04A1B2C3D4E5F6" and b["tests"] == 1 for b in st["batteries"]), st["batteries"]
     print("hub test passed")
 
 

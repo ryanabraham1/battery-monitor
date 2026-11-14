@@ -31,6 +31,8 @@ Prices are rough single-quantity figures from typical hobby suppliers, not quote
 | Bolt-down **MIDI fuse, 60 A**, 32 V or higher (30 mm hole spacing) | 1 | Plus a spare. Bolts across the two M5 studs on the board | 3–5 |
 | M5 × 20 bolts, 2 plain nuts + 1 lock nut each, washers | 2 sets | Fuse studs: bolt from below, nut, fuse, (ring terminal on the BATT+ stud), washer, lock nut | 1 |
 | Load resistor, **0.2 Ω 100 W**, aluminium-housed | 2 | Wired in parallel (0.1 Ω, about 105 A). Use three 0.25 Ω instead for about 120 A. Bolt them to a metal plate | 12–20 |
+| Thermostat, **normally closed**, opens at 70–80 °C (KSD9700 or KSD301 style) | 1 | Required. Bolted or epoxied to the load resistor and plugged into J13; without it the node cannot fire a pulse | 2 |
+| JST-XH 2-pin plug with leads | 1 | For the thermostat | 0.50 |
 | Anderson SB50 housing + 6 AWG contacts | 1 | Mates the battery | 5 |
 | Anderson SB50 housing + 10–12 AWG contacts | 1 | Mates the charger | 4 |
 | 6 AWG wire, red and black (8 AWG is acceptable) | ~0.3 m each | Battery pigtail; keep it short | 5 |
@@ -95,6 +97,10 @@ PETG or ASA is better than PLA near a charger. `node_lid.stl` is already saved u
    Polarity matters. The board has reverse-polarity protection on its own electronics, but a
    reversed battery with a charger attached is still a short through the charger.
 4. Bolt the 60 A fuse on last.
+5. **Thermostat (required).** Fix it to the body of the load resistor and plug it into J13. It sits in
+   series with the MOSFET's gate supply: if the resistor overheats it opens and no pulse can fire.
+   With nothing plugged into J13 every test fails with "pulse current too low". R11 next to J13 is
+   left unpopulated on purpose; bridging it bypasses the thermostat and is for bench testing only.
 
 ## 4. Flash and configure a node
 
@@ -191,11 +197,32 @@ To try the hub before any node exists, see the top of `hub/sim_node.py`.
    one taken on a rested battery, and a cold battery reads higher than a warm one.
 4. "Download all tests (CSV)" at the bottom of the page gives you everything for a spreadsheet.
 
+## Optional: NFC battery tags
+
+Without a reader, results are logged per station. To have them follow each battery instead, add a
+reader to any node; the firmware detects it at power-up and nothing else changes.
+
+| Item | Qty | Notes | ~USD |
+|---|---|---|---|
+| PN532 NFC module (the common red "V3" board) | 1 per node | Set its mode switches/jumpers to **I2C** | 6–9 |
+| 1×6 pin header, 2.54 mm | 1 per node | Solder into J11 | 0.05 |
+| Female–female jumper wires, 20–30 cm | 6 per node | PN532 to J11 | 1 |
+| NFC sticker tag, NTAG213 or NTAG215 | 1 per battery | Stick it where it lands on the reader. Use "on-metal" tags if range is poor | 0.30–1 |
+
+| J11 pin | 1 | 2 | 3 | 4 | 5 | 6 |
+|---|---|---|---|---|---|---|
+| PN532 | VCC (3.3 V) | GND | SDA | SCL | IRQ | RSTO/RST |
+
+`case/nfc_holder.stl` holds a 42.7 × 40.4 mm PN532 board (measure yours); the tag reads through its
+1.2 mm floor. The lead leaves the case through the slot marked NFC. On the hub page a tagged battery
+appears in the history table under its tag number, where Rename gives it a name.
+
 ## 8. CAN protocol (250 kbit/s, 11-bit ids, little-endian)
 
 | Id | Direction | Bytes |
 |---|---|---|
 | `0x100 + id` | node → hub, 1 Hz | state, flags, voltage mV (u16), current ×10 mA (i16, + = discharge), reserved (0x80), MOSFET °C (i8) |
+| `0x180 + id` | node → hub, on change and every 5 s (only sent meaningfully with an NFC reader) | tag UID length (0 = none), then up to 7 UID bytes |
 | `0x200 + id` | node → hub, 3× after each test | IR ×0.01 mΩ (u16, 0xFFFF = failed), open volts mV (u16), loaded volts mV (u16), pulse current in whole amps (u8; error code if failed), sequence number (u8) |
 | `0x080 + id`, or `0x080` for all | hub → node | command: 1 test, 2 charger (byte 1: 1 = hold disconnected, 0 = normal), 3 blink LED, 4 clear fault |
 

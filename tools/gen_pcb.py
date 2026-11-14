@@ -358,7 +358,7 @@ def silk(b):
     txt("F2: 60A MIDI FUSE BOLTS HERE", 26, 27, 1.0)
     txt("F1 10A", 85.4, 23.6, 0.9)
     txt("CAN A", 55, 61.5, 1.0); txt("CAN B", 77.5, 61.5, 1.0)
-    txt("TERM", 84, 47, 0.9);
+    txt("TERM", 84, 47, 0.9); txt("NFC", 92.5, 46, 0.9); txt("TSW", 38, 48.3, 0.9)
     txt("RST", 30, 60, 0.8); txt("BOOT", 30, 68, 0.8)
 
 

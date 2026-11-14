@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Pit hub for the FRC battery IR monitor nodes.
 
-Listens on CAN, logs every IR test to SQLite per charger station, and serves a
+Listens on CAN, logs every IR test to SQLite per charger station (or per battery where a node has the
+optional NFC reader), and serves a
 small web page (http://<pi>:8080) showing live nodes, every battery's history, and buttons
 to trigger a test. Only dependency: python-can.
 

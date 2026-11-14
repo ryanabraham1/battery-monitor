@@ -93,10 +93,10 @@ P("L1", "Device:L", "4.7uH 2A", "Inductor_SMD:L_Sunlord_SWPA4030S", {"1": "BUCK_
 C("C7", "22u 25V", "+3V3", "GND", B, "C45783", C0805, 0.108)
 C("C8", "22u 25V", "+3V3", "GND", B, "C45783", C0805, 0.108)
 R("R10", "470R", "VIN_PROT", "VDRV_IN", B, "C23179")
-R("R11", "0R", "VDRV_IN", "VDRV", B, "C21189")
-P("J13", "Connector_Generic:Conn_01x02", "not fitted (spare gate-rail break)",
+P("R11", "Device:R", "DNP (thermostat bypass, bench use only)", R0603, {"1": "VDRV_IN", "2": "VDRV"}, B, asm="none")
+P("J13", "Connector_Generic:Conn_01x02", "TSW: NC thermostat on the load resistor (required)",
   "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical", {"1": "VDRV_IN", "2": "VDRV"}, B,
-  asm="none")
+  "C20079", "XH-2A", "tht", 0.007)
 P("D6", "Device:D_Zener", "BZT52C12", "Diode_SMD:D_SOD-123", {"1": "VDRV", "2": "GND"}, B,
   "C43491", "BZT52C12", price=0.021)
 C("C9", "1u 50V", "VDRV", "GND", B, "C15849")
@@ -161,7 +161,7 @@ R("R24", "10k", "+3V3", "NTC_FET", B, "C25804")
 C("C17", "100n", "NTC_FET", "GND", B, "C14663")
 
 # ------------------------------------------------------------------ CAN + NFC
-B = "6 CAN bus (2x RJ45 daisy-chain, CiA-303 pinout, jumper termination) + spare I2C header"
+B = "6 CAN bus (2x RJ45 daisy-chain, CiA-303 pinout, jumper termination) + optional NFC header"
 P("U3", "Interface_CAN_LIN:SN65HVD230", "SN65HVD230DR", "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm",
   {"1": "CAN_TX", "2": "GND", "3": "+3V3", "4": "CAN_RX", "5": NC, "6": "CANL", "7": "CANH", "8": "GND"}, B,
   "C12084", "TI SN65HVD230DR", price=0.56)
@@ -177,9 +177,9 @@ P("J9", "Connector:RJ45_LED_Shielded", "CAN A", "Connector_RJ:RJ45_Connfly_DS112
   dict(RJ), B, "C86578", "Connfly DS1128-09-S8B8X", "tht", 0.57)
 P("J10", "Connector:RJ45_LED_Shielded", "CAN B", "Connector_RJ:RJ45_Connfly_DS1128-09-S8xx-S_Horizontal",
   dict(RJ), B, "C86578", "Connfly DS1128-09-S8B8X", "tht", 0.57)
-P("J11", "Connector_Generic:Conn_01x06", "not fitted (spare 3V3 I2C header)", "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical",
+P("J11", "Connector_Generic:Conn_01x06", "optional: PN532 NFC reader (I2C)", "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical",
   {"1": "+3V3", "2": "GND", "3": "NFC_SDA", "4": "NFC_SCL", "5": "NFC_IRQ", "6": "NFC_RST"}, B,
-  asm="none")
+  "", "2.54mm header 1x6 (optional)", "tht", 0.03)
 R("R21", "4k7", "+3V3", "NFC_SDA", B, "C23162")
 R("R22", "4k7", "+3V3", "NFC_SCL", B, "C23162")
 
@@ -204,13 +204,14 @@ NOTES = {
     "2": "U2 senses the shunt Kelvin-style (R4/R5/C1 filter). VBUS is taken from the BATT+ lug itself (ahead of "
          "the fuse) through R6. Address 0x40. INA228AIDGSR is a pin-compatible drop-in when back in stock.",
     "3": "D4 = reverse-polarity protection for logic. D5 lets USB power the MCU on the bench. U4 fixed 3.3 V "
-         "buck, 3.8-32 V in. VDRV = zener-clamped 12 V rail for the gate driver. J13 is not fitted; R11 bridges it.",
+         "buck, 3.8-32 V in. VDRV = zener-clamped 12 V rail for the gate driver. A normally-closed thermostat on the load resistor plugs into J13 and "
+         "breaks that rail when hot, so no pulse can fire. R11 (not fitted) bypasses it for bench work.",
     "4": "LOAD_EN (GPIO6, pulled low) drives B and /CLR of the one-shot: Q follows LOAD_EN but is forced low "
          "after t = R14*C10 ~ 220 ms even if firmware hangs with the pin high. U6 UVLO + R13 keep Q1 off at boot. "
          "R12 = 470 R slows the gate so 120 A is switched over ~10 us instead of <1 us.",
     "5": "Native USB (GPIO19/20) for flashing + serial CLI. On-board MOSFET NTC divider 10k/10k to ADC1 (GPIO2). "
          "Status LEDs (red, green, blue 0603) are active-low. Wi-Fi/BLE are never initialised in firmware.",
     "6": "RJ45 pin 1 = CAN_H, 2 = CAN_L, 3 & 7 = GND (CiA 303-1). Both jacks are paralleled for daisy-chain. "
-         "Fit JP1 on the two end nodes only. J11 is a spare I2C header and is not fitted.",
+         "Fit JP1 on the two end nodes only. J11 takes an optional PN532 NFC reader (3V3, I2C1, IRQ, RST).",
     "7": "Test points per spec; four M3 mounting holes.",
 }

@@ -1338,7 +1338,7 @@
 				)
 			)
 		)
-		(property "Value" "not fitted (spare 3V3 I2C header)"
+		(property "Value" "optional: PN532 NFC reader (I2C)"
 			(at 0 15.08 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -1374,7 +1374,7 @@
 				)
 			)
 		)
-		(property "MPN" ""
+		(property "MPN" "2.54mm header 1x6 (optional)"
 			(at 0 0 0)
 			(layer "F.SilkS")
 			(hide yes)
@@ -1386,8 +1386,20 @@
 				)
 			)
 		)
+		(property "LCSC" ""
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "877cedcd-9dcb-4ad2-8a98-23174c042cdd")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
 		(path "/d94b2cce-e0b6-5ebd-8adc-67cd6cf47d79")
-		(attr through_hole exclude_from_pos_files exclude_from_bom)
+		(attr through_hole)
 		(fp_line
 			(start -1.38 -1.38)
 			(end 0 -1.38)
@@ -3772,7 +3784,7 @@
 				)
 			)
 		)
-		(property "Value" "not fitted (spare gate-rail break)"
+		(property "Value" "TSW: NC thermostat on the load resistor (required)"
 			(at 1.25 4.6 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -3808,7 +3820,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C20079"
 			(at 0 0 0)
 			(layer "F.SilkS")
 			(hide yes)
@@ -3820,7 +3832,7 @@
 				)
 			)
 		)
-		(property "MPN" ""
+		(property "MPN" "XH-2A"
 			(at 0 0 0)
 			(layer "F.SilkS")
 			(hide yes)
@@ -3833,7 +3845,7 @@
 			)
 		)
 		(path "/dfc56756-567a-599b-9081-b39060b47cbd")
-		(attr through_hole exclude_from_pos_files exclude_from_bom)
+		(attr through_hole)
 		(fp_line
 			(start -2.85 -2.75)
 			(end -2.85 -1.5)
@@ -8748,7 +8760,7 @@
 				)
 			)
 		)
-		(property "Value" "0R"
+		(property "Value" "DNP (thermostat bypass, bench use only)"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -8784,7 +8796,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C21189"
+		(property "LCSC" ""
 			(at 0 0 90)
 			(layer "F.SilkS")
 			(hide yes)
@@ -8796,8 +8808,20 @@
 				)
 			)
 		)
+		(property "MPN" ""
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "22fad0d9-1ff8-4e92-bd2b-ebe9debc6a42")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
 		(path "/2467eeab-65c6-5a69-8209-27efcae84e18")
-		(attr smd)
+		(attr smd exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -0.237258 -0.5225)
 			(end 0.237258 -0.5225)
@@ -22790,6 +22814,17 @@
 			)
 		)
 	)
+	(gr_text "NFC"
+		(at 192.5 96 0)
+		(layer "F.SilkS")
+		(uuid "1617502e-a56d-4f06-b94f-4fc47d864896")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.135)
+			)
+		)
+	)
 	(gr_text "LOAD+"
 		(at 157 66.2 0)
 		(layer "F.SilkS")
@@ -22853,6 +22888,17 @@
 			(font
 				(size 1.3 1.3)
 				(thickness 0.195)
+			)
+		)
+	)
+	(gr_text "TSW"
+		(at 138 98.3 0)
+		(layer "F.SilkS")
+		(uuid "7ba63d90-4900-4f17-a4f3-c841ad8944fa")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.135)
 			)
 		)
 	)

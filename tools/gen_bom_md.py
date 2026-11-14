@@ -94,6 +94,11 @@ if REV_B:
 else:
     w("| Load resistor, 1 Ω 100 W, aluminium-housed wirewound | 1 | $3–10 | %s · %s · %s | 1 Ω (1R), 100 W, gold aluminium case with two mounting holes |" % (
         amazon("1 ohm 100W aluminum shell wirewound resistor"), ali("1R 100W aluminum shell resistor"), digikey("HS100 1R")))
+w("| Thermostat, normally closed, opens at 70–80 °C (KSD9700 or KSD301) | 1 | $1–2 | %s · %s | \"Normally closed\" / NC, 70–80 °C. Required: the node will not pulse without it |" % (
+    amazon("KSD9700 normally closed 75C thermal switch"), ali("KSD9700 75C normally closed")))
+w("| JST-XH 2-pin plug with leads | 1 | $0.50 | %s | Plugs into J13; solder the thermostat to its leads |" % amazon("JST XH 2 pin connector with wire"))
+if not REV_B:
+    w("| ATO/ATC blade fuse, 15 A | 1 + spares | $0.50 | %s | Standard automotive blade fuse (regular size, not mini) |" % amazon("ATO ATC blade fuse 15A"))
 w("| Metal plate or heatsink for the resistor%s | 1 | scrap | – | Any aluminium offcut; the resistor must not be mounted on plastic or wood |" % ("s" if REV_B else ""))
 w("")
 w("### Things you said you already have")
@@ -121,6 +126,16 @@ w("| M3 × 16 screws (case) | 4 | %s |" % amazon("M3x16 screw"))
 w("| Ethernet patch cable to the next node | 1 | %s |" % amazon("cat5e patch cable 3ft"))
 w("| Filament for the case (PETG or ASA), about 70 g | – | %s |" % amazon("PETG filament 1.75mm"))
 w("")
+w("## Optional: NFC battery tags")
+w("")
+w("Not needed. Add to any node later to make results follow each battery instead of the station.")
+w("")
+w("| Part | Qty | About | Buy |")
+w("|---|---|---|---|")
+w("| PN532 NFC module (red V3 board, set to I2C) | 1 per node | $6–9 | %s · %s |" % (amazon("PN532 NFC module V3"), ali("PN532 NFC module V3")))
+w("| Female–female jumper wires | 6 per node | $1 | %s |" % amazon("female to female dupont jumper wires 20cm"))
+w("| NTAG213 or NTAG215 sticker tags | 1 per battery | $0.30–1 | %s |" % amazon("NTAG215 NFC sticker tags"))
+w("")
 w("## 4. Hub (one for the whole pit)")
 w("")
 w("| Part | Qty | About | Buy | Notes |")
@@ -134,8 +149,8 @@ w("| M2.5 × 6 screws | 4 | have | %s | Pi to the printed tray |" % amazon("M2.5
 w("")
 w("## 5. What it adds up to")
 w("")
-per_node_lo = smt_cost + tht_cost + (12 + 3 if REV_B else 3)
-per_node_hi = smt_cost + tht_cost + (20 + 5 if REV_B else 10)
+per_node_lo = smt_cost + tht_cost + (12 + 3 if REV_B else 3) + 1.5
+per_node_hi = smt_cost + tht_cost + (20 + 5 if REV_B else 10) + 2.5
 w("Per node, parts only (board parts + hand-solder parts + off-board parts above, not counting what you")
 w("already have): **about $%.0f–%.0f**. On top of that the JLCPCB order carries fixed costs that are shared" % (per_node_lo, per_node_hi))
 w("across the batch: bare boards, assembly setup, the extended-part fees and shipping, roughly $%s for" % ("120–170" if REV_B else "100–160"))

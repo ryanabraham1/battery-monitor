@@ -12,7 +12,7 @@ assembly. Order page: [jlcpcb.com](https://jlcpcb.com/). JLC supplies and places
 
 | What | Per board | Notes |
 |---|---|---|
-| Parts JLC places (42 part types) | $9.95 | 19 of them are "extended" parts, about $3 each per order |
+| Parts JLC places (41 part types) | $9.95 | 19 of them are "extended" parts, about $3 each per order |
 | Bare board | about $3–4 at 10 pcs | 100 × 80 mm, 2 layers, **2 oz copper** (needed for the 120 A pulse and 60 A fuse) |
 
 ## 2. Hand-solder parts for the board
@@ -25,12 +25,14 @@ JLC's standard assembly does not place these through-hole parts. Add them to an
 | J7 | 2.54mm header 1x3 | 1 | $0.02 | [Amazon](https://www.amazon.com/s?k=2.54mm+male+pin+header+strip) |
 | J9 | Connfly DS1128-09-S8B8X | 1 | $0.57 | [C86578](https://www.lcsc.com/search?q=C86578) |
 | J10 | Connfly DS1128-09-S8B8X | 1 | $0.57 | [C86578](https://www.lcsc.com/search?q=C86578) |
+| J11 | 2.54mm header 1x6 (optional) | 1 | $0.03 | [Amazon](https://www.amazon.com/s?k=2.54mm+male+pin+header+strip) |
+| J13 | XH-2A | 1 | $0.01 | [C20079](https://www.lcsc.com/search?q=C20079) |
 | JP1 | 2.54mm header 1x2 + jumper cap | 1 | $0.02 | [Amazon](https://www.amazon.com/s?k=2.54mm+male+pin+header+strip) |
 | K1 | Omron G2RL-1-E-DC12 | 1 | $1.90 | [C58243](https://www.lcsc.com/search?q=C58243) |
 | Q1 | Infineon IRLB3034PBF | 1 | $1.02 | [C144151](https://www.lcsc.com/search?q=C144151) or [Digi-Key](https://www.digikey.com/en/products/result?keywords=IRLB3034PBF) (buy genuine Infineon) |
 | JP1 cap | 2.54 mm jumper cap, for the last node on the CAN chain only | 1 per system | $0.05 | [Amazon](https://www.amazon.com/s?k=2.54mm+jumper+cap) |
 
-Hand-solder parts total: **$4.09 per board**.
+Hand-solder parts total: **$4.13 per board**.
 
 ## 3. Off-board parts, per node
 
@@ -38,6 +40,8 @@ Hand-solder parts total: **$4.09 per board**.
 |---|---|---|---|---|
 | Load resistor, 0.2 Ω 100 W, aluminium-housed wirewound | 2 (in parallel) | $6–10 each | [Amazon](https://www.amazon.com/s?k=0.2+ohm+100W+aluminum+shell+wirewound+resistor) · [AliExpress](https://www.aliexpress.com/wholesale?SearchText=0.2R+100W+aluminum+shell+resistor) · [Digi-Key](https://www.digikey.com/en/products/result?keywords=HS100+0R2) | 0.2 Ω (often written 0R2 or 0.2R), 100 W, gold aluminium case with two mounting holes |
 | Bolt-down MIDI fuse, 60 A, 32 V or higher | 1 + spare | $3–5 | [Amazon](https://www.amazon.com/s?k=MIDI+fuse+60A+32V+bolt+down) · [Digi-Key](https://www.digikey.com/en/products/result?keywords=MIDI+fuse+60A+32V) | "MIDI" or "AMI" style, 30 mm between hole centres, M5 holes, 60 A |
+| Thermostat, normally closed, opens at 70–80 °C (KSD9700 or KSD301) | 1 | $1–2 | [Amazon](https://www.amazon.com/s?k=KSD9700+normally+closed+75C+thermal+switch) · [AliExpress](https://www.aliexpress.com/wholesale?SearchText=KSD9700+75C+normally+closed) | "Normally closed" / NC, 70–80 °C. Required: the node will not pulse without it |
+| JST-XH 2-pin plug with leads | 1 | $0.50 | [Amazon](https://www.amazon.com/s?k=JST+XH+2+pin+connector+with+wire) | Plugs into J13; solder the thermostat to its leads |
 | Metal plate or heatsink for the resistors | 1 | scrap | – | Any aluminium offcut; the resistor must not be mounted on plastic or wood |
 
 ### Things you said you already have
@@ -58,6 +62,16 @@ Listed so nothing is forgotten; search links in case you run short.
 | Ethernet patch cable to the next node | 1 | [Amazon](https://www.amazon.com/s?k=cat5e+patch+cable+3ft) |
 | Filament for the case (PETG or ASA), about 70 g | – | [Amazon](https://www.amazon.com/s?k=PETG+filament+1.75mm) |
 
+## Optional: NFC battery tags
+
+Not needed. Add to any node later to make results follow each battery instead of the station.
+
+| Part | Qty | About | Buy |
+|---|---|---|---|
+| PN532 NFC module (red V3 board, set to I2C) | 1 per node | $6–9 | [Amazon](https://www.amazon.com/s?k=PN532+NFC+module+V3) · [AliExpress](https://www.aliexpress.com/wholesale?SearchText=PN532+NFC+module+V3) |
+| Female–female jumper wires | 6 per node | $1 | [Amazon](https://www.amazon.com/s?k=female+to+female+dupont+jumper+wires+20cm) |
+| NTAG213 or NTAG215 sticker tags | 1 per battery | $0.30–1 | [Amazon](https://www.amazon.com/s?k=NTAG215+NFC+sticker+tags) |
+
 ## 4. Hub (one for the whole pit)
 
 | Part | Qty | About | Buy | Notes |
@@ -72,6 +86,6 @@ Listed so nothing is forgotten; search links in case you run short.
 ## 5. What it adds up to
 
 Per node, parts only (board parts + hand-solder parts + off-board parts above, not counting what you
-already have): **about $29–39**. On top of that the JLCPCB order carries fixed costs that are shared
+already have): **about $31–42**. On top of that the JLCPCB order carries fixed costs that are shared
 across the batch: bare boards, assembly setup, the extended-part fees and shipping, roughly $120–170 for
 ten boards. The hub is about $45–60 with a Pi Zero 2 W.

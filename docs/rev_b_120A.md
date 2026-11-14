@@ -105,4 +105,4 @@ logic or CCA estimate, only resistance, voltage, a charge estimate and a verdict
 
 The price is a hotter, higher-energy fault case. With rev A a stuck MOSFET dissipates 144 W in
 the resistor; with rev B it is over 1 kW until the fuse opens. Mount the load bank on metal, away
-from anything that burns.
+from anything that burns, and fit the thermostat (it is required on this board).

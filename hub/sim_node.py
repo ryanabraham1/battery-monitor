@@ -18,8 +18,8 @@ ID_CMD, ID_STATUS, ID_RESULT = 0x080, 0x100, 0x200
 
 
 class SimNode:
-    def __init__(self, bus, node_id, ir=13.2):
-        self.bus, self.id, self.ir = bus, node_id, ir
+    def __init__(self, bus, node_id, ir=13.2, uid=b""):
+        self.bus, self.id, self.ir, self.uid = bus, node_id, ir, uid   # uid: bytes of an NFC tag, if any
         self.seq = 0
         self.running = True
 
@@ -28,6 +28,8 @@ class SimNode:
 
     def status(self, state=2):
         self.send(ID_STATUS, struct.pack("<BBHhbb", state, 0x1A, 13150, -420, -128, 27))
+        if self.uid:
+            self.send(0x180, bytes([len(self.uid)]) + self.uid.ljust(7, b"\0"))
 
     def result(self):
         self.seq = (self.seq + 1) & 0xFF
