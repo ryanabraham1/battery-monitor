@@ -52,6 +52,63 @@ view (the sheet is cropped at the right and bottom).
 
 ## Ordering (JLCPCB)
 
+### Saved quotes, ready to order
+
+Both boards are already set up on JLCPCB with Gerbers, BOM, CPL, options and corrected part
+rotations, and sit in the cart. The links only open while you're signed in to the JLCPCB
+account that made them. Anyone else gets a sign-in page or "not found".
+
+| Board | Quote | Qty | Price (14 Nov 2026, before shipping) |
+|---|---|---|---|
+| Rev A, 12 A (`main`) | [ir_node_gerbers_Y2](https://cart.jlcpcb.com/smt-order/?pcbFileNo=817ec2df53a0476d98992071956ca152) | 10 PCB + 10 assembled | $44.10 + $208.83 = **$252.93** (5 pcs: $199.50) |
+| Rev B, 120 A (`rev-b-120a`) | [ir_node_gerbers_Y3](https://cart.jlcpcb.com/smt-order/?pcbFileNo=c6244d6d3c0043389400a579e429804d) | 10 PCB + 10 assembled | $44.10 + $213.49 = **$257.59** (5 pcs: $203.47) |
+| **Both** | | | **$510.52** + shipping (UPS about $26) |
+
+To order from that account, open the [cart](https://cart.jlcpcb.com/shopcart/cart), tick the items
+and check out.
+
+### If someone else is paying (school purchasing)
+
+JLCPCB has no public share link for a quote, so the purchaser rebuilds it in their own account.
+It takes about five minutes per board, and the price comes out the same:
+
+1. Give them the three files for each board: `fab/ir_node_gerbers.zip`, `fab/ir_node_BOM_JLC.csv`
+   and `fab/ir_node_CPL_JLC.csv` (the Rev B files are on the `rev-b-120a` branch).
+2. On [jlcpcb.com/quote](https://cart.jlcpcb.com/quote), upload the Gerber zip. Set PCB Qty 10 and
+   Outer Copper Weight **2 oz**, and leave everything else at its default.
+3. Turn on PCB Assembly: Standard, top side, PCBA Qty 10. Click Next, then upload the BOM and CPL
+   and click Process.
+4. Tick SW1 and SW2 (JLC unticks them because they share a part number). Click Next through the
+   placement preview; the rotations are already correct in the CPL.
+5. Product description: Sensor/Controller/Precision Instrument → Current Sensor. Then Save to Cart.
+
+If the school pays by purchase order and not by card, ask JLCPCB support which payment and
+invoice options they accept for schools before building the cart.
+
+Settings used: FR-4, 2 layers, 1.6 mm, green, OSP finish, **2 oz outer copper**, Standard PCBA,
+top side only, edge rails added by JLC, product description "Current Sensor (HS 903090)".
+SW1 and SW2 share a part number, so JLC unticks them both. Both are re-ticked in these quotes.
+
+**Rotation corrections.** JLC's models for these packages sit at a different zero rotation from
+KiCad's footprints. `tools/gen_fab.py` now adds these offsets when it writes the CPL (`JLC_ROT`),
+so a fresh upload places them correctly. Check in JLC's preview that each pink pin-1 dot sits on
+the footprint's pin-1 triangle.
+
+| Part | Package | Offset added to CPL rotation |
+|---|---|---|
+| U2 | VSSOP-10 | −90° (90° clockwise) |
+| U3 | SOIC-8 | −90° |
+| U4 | TSOT-23-6 | −90° |
+| U7 | SOT-23-6 | −90° |
+| U5 | SSOP-8 | 180° |
+| U6 | SOT-23-5 | 180° |
+| Q2 | SOT-23 | 180° |
+| D7 | SOT-23 | 180° |
+
+Diodes, LEDs, C18 (rev B), U1 (ESP32) and J8 (USB-C) were checked and are correct as placed.
+
+### From scratch
+
 1. Upload `fab/ir_node_gerbers.zip`. Options: 2 layers, 1.6 mm, **2 oz outer copper**, 100 × 80 mm.
    To save money on rev A you can order **1 oz** instead: the pours are wide enough for the 12 A
    pulse and for chargers up to about 10 A. Stay with 2 oz if your charger is larger.
