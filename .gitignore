@@ -4,3 +4,4 @@ __pycache__/
 *.lck
 fp-info-cache
 hw/route/
+tools/logs/
