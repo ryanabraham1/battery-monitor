@@ -2,9 +2,11 @@
 //
 // What it does:
 //   - reads battery voltage/current from the INA226 across the 1 mOhm shunt
+//   - if a PN532 NFC reader is plugged into J11, reads the battery's tag so results follow the battery;
+//     without one, results are reported per station
 //   - measures internal resistance: disconnect charger -> settle -> 100 ms ~12 A pulse ->
 //     IR = (V_open - V_loaded) / (I_loaded - I_open) - lead resistance
-//   - reports over CAN to the pit hub (results are per station; there is no battery ID reader) and takes commands from it
+//   - reports over CAN to the pit hub and takes commands from it
 //   - USB serial console for setup (type "help")
 //
 // Radios are never started.
@@ -12,6 +14,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <Preferences.h>
+#include <Adafruit_PN532.h>
 #include "driver/twai.h"
 #include "config.h"
 
@@ -37,9 +40,12 @@ static void loadSettings() {
 
 // ---------------------------------------------------------------- live state
 static State    state = ST_NO_BATT;
-static bool     inaOk = false, canOk = false;
+static bool     inaOk = false, nfcOk = false, canOk = false;
 static float    busV = 0, amps = 0;          // filtered; amps > 0 = battery discharging
 static int8_t   tFet = -128;                 // MOSFET temperature, degC, -128 = sensor fault
+static uint8_t  uid[7];
+static uint8_t  uidLen = 0;
+static uint8_t  tagMisses = 0;
 
 static bool     resultValid = false;
 static Err      lastErr = ERR_NONE;
@@ -52,6 +58,7 @@ static bool     testRequested = false;
 static uint32_t settleStart = 0, lastTestMs = 0, battSince = 0, identifyUntil = 0;
 static bool     battPresent = false, firstTestDone = false;
 
+static Adafruit_PN532 nfc(PIN_NFC_IRQ, PIN_NFC_RST, &Wire1);
 
 // ---------------------------------------------------------------- LED (active low)
 static void led(bool r, bool g, bool b) {
@@ -177,7 +184,9 @@ static void canService() {
 static void sendStatus() {
   uint8_t d[8];
   uint8_t flags = 0;
+  if (uidLen) flags |= FLAG_TAG;
   if (!digitalRead(PIN_RELAY_EN)) flags |= FLAG_CHG_CONN;
+  if (nfcOk) flags |= FLAG_NFC_OK;
   if (inaOk) flags |= FLAG_INA_OK;
   if (resultValid) flags |= FLAG_RESULT_OK;
   uint16_t mv = (uint16_t)constrain(lroundf(busV * 1000), 0L, 65535L);
@@ -187,6 +196,13 @@ static void sendStatus() {
   d[4] = ca & 0xFF; d[5] = (uint16_t)ca >> 8;
   d[6] = 0x80; d[7] = (uint8_t)tFet;   // byte 6 is reserved
   canSend(CAN_ID_STATUS + nodeId, d);
+}
+
+static void sendUid() {
+  uint8_t d[8] = {0};
+  d[0] = uidLen;
+  memcpy(d + 1, uid, uidLen);
+  canSend(CAN_ID_UID + nodeId, d);
 }
 
 static void sendResult() {
@@ -290,11 +306,45 @@ static void startTest() {
   Serial.printf("charger disconnected, settling %u s\n", settleSec);
 }
 
+// ---------------------------------------------------------------- NFC
+static void nfcInit() {
+  Wire1.begin(PIN_NFC_SDA, PIN_NFC_SCL, 100000);
+  nfc.begin();
+  nfcOk = nfc.getFirmwareVersion() != 0;
+  if (nfcOk) nfc.SAMConfig();
+}
+
+static void nfcPoll() {
+  if (!nfcOk) return;
+  uint8_t u[7], len = 0;
+  if (nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, u, &len, 60) && len > 0 && len <= 7) {
+    tagMisses = 0;
+    if (len != uidLen || memcmp(u, uid, len) != 0) {
+      memcpy(uid, u, len);
+      uidLen = len;
+      resultValid = false; lastErr = ERR_NONE; firstTestDone = false;   // different battery
+      battSince = millis();
+      Serial.print("tag ");
+      for (int k = 0; k < len; k++) Serial.printf("%02X", u[k]);
+      Serial.println();
+      sendUid();
+    }
+  } else if (uidLen && ++tagMisses >= 4) {
+    uidLen = 0;
+    Serial.println("tag removed");
+    sendUid();
+  }
+}
+
 // ---------------------------------------------------------------- console
 static void printStatus() {
   Serial.printf("node %u  state %u  %.3f V  %+.2f A  fet %d C\n", nodeId, state, busV, amps, tFet);
-  Serial.printf("ina %s  can %s  charger %s\n", inaOk ? "ok" : "MISSING",
+  Serial.printf("ina %s  nfc %s  can %s  charger %s\n", inaOk ? "ok" : "MISSING", nfcOk ? "ok" : "not found",
                 canOk ? "ok" : "FAILED", digitalRead(PIN_RELAY_EN) ? "disconnected" : "connected");
+  Serial.print("tag ");
+  if (!uidLen) Serial.print("none");
+  for (int k = 0; k < uidLen; k++) Serial.printf("%02X", uid[k]);
+  Serial.println();
   if (resultValid) Serial.printf("last IR %.2f mOhm\n", irMilliohm);
   else if (lastErr) Serial.printf("last test failed: %s\n", errText(lastErr));
   Serial.printf("settings: lead %.2f mOhm, auto %u min, settle %u s, good<%.1f warn<%.1f\n",
@@ -382,12 +432,13 @@ void setup() {
   Wire.begin(PIN_I2C0_SDA, PIN_I2C0_SCL, 400000);
   Wire.setTimeOut(20);
   inaOk = inaInit();
+  nfcInit();
   canOk = canInit();
   analogSetPinAttenuation(PIN_NTC_FET, ADC_11db);
 }
 
 void loop() {
-  static uint32_t tStatus = 0, tTemp = 0, tResult = 0, tInaRetry = 0;
+  static uint32_t tStatus = 0, tNfc = 0, tUid = 0, tTemp = 0, tResult = 0, tInaRetry = 0;
   uint32_t now = millis();
 
   consolePoll();
@@ -408,8 +459,13 @@ void loop() {
     tTemp = now;
     tFet = readNtc(PIN_NTC_FET);
   }
+  if (state != ST_SETTLE && state != ST_TEST && now - tNfc > 500) {
+    tNfc = now;
+    nfcPoll();
+  }
+
   // --- battery presence and state
-  bool present = busV > BATT_PRESENT_V;
+  bool present = uidLen > 0 || busV > BATT_PRESENT_V;
   if (present && !battPresent) { battSince = now; firstTestDone = false; }
   if (!present && battPresent) { resultValid = false; lastErr = ERR_NONE; }
   battPresent = present;
@@ -437,6 +493,7 @@ void loop() {
 
   // --- CAN reporting
   if (now - tStatus > 1000) { tStatus = now; canService(); sendStatus(); }
+  if (now - tUid > 5000)    { tUid = now; sendUid(); }
   if (resultResend && now - tResult > 200) { tResult = now; resultResend--; sendResult(); }
 
   updateLed();

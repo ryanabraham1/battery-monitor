@@ -24,7 +24,7 @@ def pt(x, y):
 PL = {
     # high-current path, top band
     "J1": (11, 10, 0), "J2": (11, 27, 0),
-    "F1": (25.9, 10, 0),
+    "F1": (20.5, 8.75, 0),
     "R1": (42.5, 10, 0),
     "J5": (55, 10, 0),
     "D3": (31.5, 19, 270),
@@ -354,9 +354,9 @@ def silk(b):
         x, y = PL[ref][0], PL[ref][1]
         txt(label, x + dx, y + dy, 1.3)
     txt("FRC BATTERY IR NODE  rev A", 20, 78.3, 1.3)
-    txt("F1 15A", 25.9, 6.6, 1.0)
+    txt("F1: 15A ATO", 26.5, 3, 1.0)
     txt("CAN A", 55, 61.5, 1.0); txt("CAN B", 77.5, 61.5, 1.0)
-    txt("TERM", 84, 47, 0.9);
+    txt("TERM", 84, 47, 0.9); txt("NFC", 92.5, 46, 0.9); txt("TSW", 38, 48.3, 0.9)
     txt("RST", 30, 60, 0.8); txt("BOOT", 30, 68, 0.8)
 
 

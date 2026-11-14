@@ -21,7 +21,7 @@ or tested on real hardware yet: the firmware compiles and the hub passes a simul
 - ESP32-S3 (radio unused), INA226 current/voltage monitor with a 1 mΩ Kelvin-sensed shunt
 - Charger relay on its normally-closed contact, so an unpowered node leaves the charger connected
 - Pulse-load MOSFET with a hardware one-shot that cuts the load after ~220 ms even if firmware hangs
-- Two RJ45 jacks for daisy-chained CAN, USB-C for flashing and serial
+- Two RJ45 jacks for daisy-chained CAN, USB-C for flashing and serial, header for an optional PN532 NFC reader
 - Six M4 bolt-down lug pads: BATT±, CHG±, LOAD± (off-board 1 Ω 100 W resistor)
 
 | Top copper | Bottom copper |
@@ -47,7 +47,7 @@ view (the sheet is cropped at the right and bottom).
 | `renders/` | PNG previews of each copper layer and 3D views |
 | `firmware/` | ESP32-S3 node firmware (PlatformIO, Arduino framework) |
 | `hub/` | Raspberry Pi hub: CAN logger, SQLite history, web page, installer, simulated node and test |
-| `case/` | Printable STLs: node base and lid, Pi tray |
+| `case/` | Printable STLs: node base and lid, Pi tray, optional NFC reader holder |
 | `tools/` | The Python scripts that generate everything (run with KiCad's bundled Python) |
 
 ## Ordering (JLCPCB)
@@ -68,7 +68,7 @@ manufacturer part numbers as well as LCSC numbers.
 The PCB is one part of the system. The complete list with quantities, notes and rough prices is
 in [docs/setup.md](docs/setup.md#1-everything-to-buy). In short:
 
-- **Per node:** 1 Ω 100 W resistor, two SB50 connectors, 10 and 14 AWG wire, M4 ring terminals and hardware,
+- **Per node:** 1 Ω 100 W resistor, normally-closed thermostat, 15 A blade fuse, two SB50 connectors, 10 and 14 AWG wire, M4 ring terminals and hardware,
   an Ethernet patch cable, four M3 × 16 screws, printed case
 - **Hub (one per pit):** Raspberry Pi (3B+, 4 or 5), MCP2515 CAN HAT, microSD card, Pi power
   supply, one patch cable cut in half, printed tray
