@@ -10,6 +10,7 @@ load, and reports to a pit hub over wired CAN. No Wi-Fi or Bluetooth is used.
 firmware, the Raspberry Pi hub software and printable cases are included. Nothing has been built
 or tested on real hardware yet: the firmware compiles and the hub passes a simulated-node test.
 
+- **[docs/BOM.md](docs/BOM.md): everything to buy, with purchase links.**
 - **[docs/setup.md](docs/setup.md): full shopping list (including the Pi and CAN HAT), assembly,
   flashing, hub install, CAN wiring.** Start here.
 - [docs/rev_b_120A.md](docs/rev_b_120A.md): what rev B changes from rev A (the `main` branch), its
