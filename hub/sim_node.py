@@ -14,12 +14,12 @@ import time
 
 import can
 
-ID_CMD, ID_STATUS, ID_UID, ID_RESULT = 0x080, 0x100, 0x180, 0x200
+ID_CMD, ID_STATUS, ID_RESULT = 0x080, 0x100, 0x200
 
 
 class SimNode:
-    def __init__(self, bus, node_id, uid=bytes.fromhex("04A1B2C3D4E5F6"), ir=13.2):
-        self.bus, self.id, self.uid, self.ir = bus, node_id, uid, ir
+    def __init__(self, bus, node_id, ir=13.2):
+        self.bus, self.id, self.ir = bus, node_id, ir
         self.seq = 0
         self.running = True
 
@@ -27,10 +27,7 @@ class SimNode:
         self.bus.send(can.Message(arbitration_id=base + self.id, data=data, is_extended_id=False))
 
     def status(self, state=2):
-        self.send(ID_STATUS, struct.pack("<BBHhbb", state, 0x1F, 13150, -420, -128, 27))
-
-    def send_uid(self):
-        self.send(ID_UID, bytes([len(self.uid)]) + self.uid.ljust(7, b"\0"))
+        self.send(ID_STATUS, struct.pack("<BBHhbb", state, 0x1A, 13150, -420, -128, 27))
 
     def result(self):
         self.seq = (self.seq + 1) & 0xFF
@@ -42,15 +39,12 @@ class SimNode:
             self.send(ID_RESULT, d)
 
     def run(self):
-        t_status = t_uid = 0
+        t_status = 0
         while self.running:
             now = time.time()
             if now - t_status > 1:
                 t_status = now
                 self.status()
-            if now - t_uid > 5:
-                t_uid = now
-                self.send_uid()
             msg = self.bus.recv(0.1)
             if msg is not None and msg.arbitration_id in (ID_CMD, ID_CMD + self.id) and msg.data and msg.data[0] == 1:
                 self.status(state=4)

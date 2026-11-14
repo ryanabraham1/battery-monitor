@@ -37,8 +37,8 @@ P("J3", "Mechanical:MountingHole_Pad", "CHG+ (M4 lug)", M4PAD, {"1": "CHG_P"}, B
 P("J4", "Mechanical:MountingHole_Pad", "CHG- (M4 lug)", M4PAD, {"1": "GND"}, B, asm="none")
 P("J5", "Mechanical:MountingHole_Pad", "LOAD+ (M4 lug)", M4PAD, {"1": "VNODE"}, B, asm="none")
 P("J6", "Mechanical:MountingHole_Pad", "LOAD- (M4 lug)", M4PAD, {"1": "LOAD_N"}, B, asm="none")
-P("F1", "Device:Fuse", "ATO 15A in FLR holder", "Fuse:FuseHolder_Blade_ATO_Littelfuse_FLR_178.6165",
-  {"1": "VBAT_RAW", "2": "VBAT_F"}, B, "C207061", "Littelfuse 178.6165.0002", "tht", 2.86)
+P("F1", "Device:Fuse", "15A 125V 2410 slow", "Fuse:Fuse_Littelfuse-NANO2-451_453",
+  {"1": "VBAT_RAW", "2": "VBAT_F"}, B, "C136393", "JDT JFC2410-2150TS", price=0.085)
 P("R1", "Device:R", "1mR 1% 2W 75ppm", "Resistor_SMD:R_2512_6332Metric",
   {"1": "VBAT_F", "2": "VNODE"}, B, "C154668", "RALEC LR2512-22R001F4", price=0.105)
 P("D3", "Device:D_TVS", "SMBJ20A", "Diode_SMD:D_SMB", {"1": "VBAT_F", "2": "GND"}, B,
@@ -89,10 +89,10 @@ P("L1", "Device:L", "4.7uH 2A", "Inductor_SMD:L_Sunlord_SWPA4030S", {"1": "BUCK_
 C("C7", "22u 25V", "+3V3", "GND", B, "C45783", C0805, 0.108)
 C("C8", "22u 25V", "+3V3", "GND", B, "C45783", C0805, 0.108)
 R("R10", "470R", "VIN_PROT", "VDRV_IN", B, "C23179")
-R("R11", "0R (remove if TSW fitted)", "VDRV_IN", "VDRV", B, "C21189")
-P("J13", "Connector_Generic:Conn_01x02", "TSW (NC thermostat on load R)",
+R("R11", "0R", "VDRV_IN", "VDRV", B, "C21189")
+P("J13", "Connector_Generic:Conn_01x02", "not fitted (spare gate-rail break)",
   "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical", {"1": "VDRV_IN", "2": "VDRV"}, B,
-  "C20079", "XH-2A", "tht", 0.007)
+  asm="none")
 P("D6", "Device:D_Zener", "BZT52C12", "Diode_SMD:D_SOD-123", {"1": "VDRV", "2": "GND"}, B,
   "C43491", "BZT52C12", price=0.021)
 C("C9", "1u 50V", "VDRV", "GND", B, "C15849")
@@ -115,7 +115,7 @@ R("R13", "10k", "GATE", "GND", B, "C25804")
 
 # ------------------------------------------------------------------ MCU
 B = "5 MCU: ESP32-S3-WROOM-1 (radio unused), USB-C, buttons, LED, MOSFET NTC"
-P("U1", "RF_Module:ESP32-S3-WROOM-1", "ESP32-S3-WROOM-1-N8", "RF_Module:ESP32-S3-WROOM-1",
+P("U1", "RF_Module:ESP32-S3-WROOM-1", "ESP32-S3-WROOM-1-N4", "RF_Module:ESP32-S3-WROOM-1",
   {"1": "GND", "40": "GND", "41": "GND", "2": "+3V3", "3": "ESP_EN",
    "4": "CAN_TX", "5": "CAN_RX", "6": "LOAD_EN", "7": "LOAD_FB", "8": "RELAY_EN",
    "9": "LED_R", "10": "LED_G", "11": "LED_B", "12": "I2C0_SDA", "13": "USB_DM", "14": "USB_DP",
@@ -123,7 +123,7 @@ P("U1", "RF_Module:ESP32-S3-WROOM-1", "ESP32-S3-WROOM-1-N8", "RF_Module:ESP32-S3
    "21": "NFC_IRQ", "22": "NFC_RST", "23": NC, "24": NC, "25": NC, "26": NC, "27": "BOOT",
    "28": NC, "29": NC, "30": NC, "31": NC, "32": NC, "33": NC, "34": NC, "35": NC,
    "36": "UART_RX", "37": "UART_TX", "38": "NTC_FET", "39": NC}, B,
-  "C2913198", "Espressif ESP32-S3-WROOM-1-N8", price=4.92)
+  "C2913197", "Espressif ESP32-S3-WROOM-1-N4", price=4.26)
 C("C13", "22u 25V", "+3V3", "GND", B, "C45783", C0805, 0.108)
 C("C14", "100n", "+3V3", "GND", B, "C14663")
 R("R17", "10k", "+3V3", "ESP_EN", B, "C25804")
@@ -157,7 +157,7 @@ R("R24", "10k", "+3V3", "NTC_FET", B, "C25804")
 C("C17", "100n", "NTC_FET", "GND", B, "C14663")
 
 # ------------------------------------------------------------------ CAN + NFC
-B = "6 CAN bus (2x RJ45 daisy-chain, CiA-303 pinout, jumper termination) + PN532 header"
+B = "6 CAN bus (2x RJ45 daisy-chain, CiA-303 pinout, jumper termination) + spare I2C header"
 P("U3", "Interface_CAN_LIN:SN65HVD230", "SN65HVD230DR", "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm",
   {"1": "CAN_TX", "2": "GND", "3": "+3V3", "4": "CAN_RX", "5": NC, "6": "CANL", "7": "CANH", "8": "GND"}, B,
   "C12084", "TI SN65HVD230DR", price=0.56)
@@ -173,9 +173,9 @@ P("J9", "Connector:RJ45_LED_Shielded", "CAN A", "Connector_RJ:RJ45_Connfly_DS112
   dict(RJ), B, "C86578", "Connfly DS1128-09-S8B8X", "tht", 0.57)
 P("J10", "Connector:RJ45_LED_Shielded", "CAN B", "Connector_RJ:RJ45_Connfly_DS1128-09-S8xx-S_Horizontal",
   dict(RJ), B, "C86578", "Connfly DS1128-09-S8B8X", "tht", 0.57)
-P("J11", "Connector_Generic:Conn_01x06", "PN532 module (I2C)", "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical",
+P("J11", "Connector_Generic:Conn_01x06", "not fitted (spare 3V3 I2C header)", "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical",
   {"1": "+3V3", "2": "GND", "3": "NFC_SDA", "4": "NFC_SCL", "5": "NFC_IRQ", "6": "NFC_RST"}, B,
-  "", "2.54mm header 1x6", "tht", 0.03)
+  asm="none")
 R("R21", "4k7", "+3V3", "NFC_SDA", B, "C23162")
 R("R22", "4k7", "+3V3", "NFC_SCL", B, "C23162")
 
@@ -192,19 +192,18 @@ POWER_FLAG_NETS = ["GND", "+3V3", "VIN_PROT", "VDRV"]
 HC_NETS = ["VBAT_RAW", "VBAT_F", "VNODE", "CHG_P", "LOAD_N", "GND"]
 
 NOTES = {
-    "1": "BATT+ -> F1 (15 A ATO) -> R1 1 mOhm shunt -> VNODE. Charger joins VNODE through K1 normally-closed "
+    "1": "BATT+ -> F1 (15 A SMD fuse) -> R1 1 mOhm shunt -> VNODE. Charger joins VNODE through K1 normally-closed "
          "contact, so an unpowered/reset node leaves the charger CONNECTED. Q1 switches the off-board 1 Ohm "
          "100 W load (LOAD+/LOAD-). D2 freewheels load-lead inductance. D3 TVS sits behind the fuse.",
     "2": "U2 senses the shunt Kelvin-style (R4/R5/C1 filter). VBUS is taken from the BATT+ lug itself (ahead of "
          "the fuse) through R6. Address 0x40. INA228AIDGSR is a pin-compatible drop-in when back in stock.",
     "3": "D4 = reverse-polarity protection for logic. D5 lets USB power the MCU on the bench. U4 fixed 3.3 V "
-         "buck, 3.8-32 V in. VDRV = zener-clamped 12 V rail for the gate driver; J13 lets a normally-closed "
-         "thermostat on the load resistor cut gate drive (remove R11 when fitted).",
+         "buck, 3.8-32 V in. VDRV = zener-clamped 12 V rail for the gate driver. J13 is not fitted; R11 bridges it.",
     "4": "LOAD_EN (GPIO6, pulled low) drives B and /CLR of the one-shot: Q follows LOAD_EN but is forced low "
          "after t = R14*C10 ~ 220 ms even if firmware hangs with the pin high. U6 UVLO + R13 keep Q1 off at boot.",
     "5": "Native USB (GPIO19/20) for flashing + serial CLI. On-board MOSFET NTC divider 10k/10k to ADC1 (GPIO2). "
          "Status LEDs (red, green, blue 0603) are active-low. Wi-Fi/BLE are never initialised in firmware.",
     "6": "RJ45 pin 1 = CAN_H, 2 = CAN_L, 3 & 7 = GND (CiA 303-1). Both jacks are paralleled for daisy-chain. "
-         "Fit JP1 on the two end nodes only. J11 goes to a PN532 breakout by ribbon (3V3, I2C1, IRQ, RST).",
+         "Fit JP1 on the two end nodes only. J11 is a spare I2C header and is not fitted.",
     "7": "Test points per spec; four M3 mounting holes.",
 }

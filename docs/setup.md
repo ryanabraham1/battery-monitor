@@ -8,11 +8,10 @@ The system is: one **node** per charger (the PCB in this repo, in its printed ca
 are chained together with ordinary Ethernet patch cables carrying CAN.
 
 ```
- charger ──SB50──┐                       ┌──SB50── battery (NFC tag stuck on it)
+ charger ──SB50──┐                       ┌──SB50── battery
                  │  CHG±           BATT± │
               ┌──┴───────── node ────────┴──┐
-              │  LOAD± ── 1 Ω 100 W resistor (+ thermostat → J13)
-              │  J11 ──── PN532 NFC reader (sits where the battery's tag lands)
+              │  LOAD± ── 1 Ω 100 W resistor
               └── CAN (RJ45) ── next node ── … ── Raspberry Pi + CAN HAT
 ```
 
@@ -25,13 +24,8 @@ Prices are rough single-quantity figures from typical hobby suppliers, not quote
 | Item | Qty | Notes | ~USD |
 |---|---|---|---|
 | Assembled PCB from JLCPCB | 1 | `fab/` files; see README for ordering | 30–45 |
-| Hand-solder parts for the PCB | 1 set | The "hand-solder / THT" rows in `fab/ir_node_BOM_full.csv`: relay, fuse holder, MOSFET, RJ45 ×2, headers, JST-XH | (in BOM) |
-| ATO/ATC blade fuse, **15 A** | 1 | Plus spares | 0.50 |
+| Hand-solder parts for the PCB | 1 set | The "hand-solder / THT" rows in `fab/ir_node_BOM_full.csv`: relay, MOSFET, RJ45 ×2, headers | (in BOM) |
 | Load resistor, **1 Ω 100 W**, aluminium-housed | 1 | Bolt it to a metal plate or heatsink | 6–10 |
-| Thermostat, **normally closed**, opens at 70–80 °C (KSD9700 or KSD301 style) | 1 | Bolted or epoxied to the load resistor, wired to J13. **Desolder R11** (0 Ω, next to J13) when you fit it, or it does nothing | 2 |
-| JST-XH 2-pin plug with leads | 1 | For the thermostat (J13) | 0.50 |
-| PN532 NFC module (the common red "V3" board) | 1 | Set its mode switches/jumpers to **I2C**. Optional; without it results are logged per station instead of per battery | 6–9 |
-| Female–female jumper wires, 20–30 cm | 6 | PN532 to J11 | 1 |
 | Anderson SB50 housing + contacts for 10–12 AWG | 2 | One mates the battery, one mates the charger. Match the housing colour your team uses | 8 |
 | 10 AWG wire, red and black | ~0.5 m each | Battery and charger pigtails; keep the battery pigtail short | 4 |
 | 14 AWG wire | ~0.5 m | Node to load resistor | 1 |
@@ -40,13 +34,7 @@ Prices are rough single-quantity figures from typical hobby suppliers, not quote
 | M3 × 16 screws | 4 | Case: up through base and PCB into the lid | 0.50 |
 | Screws to mount the case and resistor plate | a few | Up to M4 through the case ears | 0.50 |
 | Ethernet patch cable (Cat5e or better) | 1 | To the next node or the hub. Length to suit; keep the whole chain under ~50 m | 2 |
-| Printed case | 1 | `case/node_base.stl`, `case/node_lid.stl`, optionally `case/nfc_holder.stl`; ~75 g of PETG | 2 |
-
-### Per battery
-
-| Item | Qty | Notes | ~USD |
-|---|---|---|---|
-| NFC sticker tag, NTAG213 or NTAG215 | 1 | Stick it where it lands on the reader when the battery is in the bay. If read range is poor against the battery, use "on-metal" (ferrite-backed) tags | 0.30–1 |
+| Printed case | 1 | `case/node_base.stl`, `case/node_lid.stl`; ~70 g of PETG | 2 |
 
 ### Hub (one for the whole pit)
 
@@ -74,11 +62,9 @@ PETG or ASA is better than PLA near a charger. `node_lid.stl` is already saved u
 
 - The four M3 × 16 screws go in from underneath: through the base, through the PCB's corner
   holes, and self-tap into the lid's corner posts. Don't overtighten.
-- Lid openings: fuse window, a window over the three status LEDs, two pin holes for BOOT and
+- Lid openings: a window over the three status LEDs, two pin holes for BOOT and
   RESET (press with a paperclip), and wire slots labelled on the lid. The LEDs sit on the board,
   so they are easiest to see from above.
-- `nfc_holder.stl` is sized for a 42.7 × 40.4 mm PN532 board; measure yours. The tag reads
-  through the 1.2 mm floor, so mount it floor-toward-battery. Cable-tie the module in.
 - To change any dimension, edit the parameters at the top of `tools/gen_case.py` and rerun it.
 - Do not print a cover for the load resistor. It needs air, and in a fault it gets hot.
 
@@ -97,13 +83,6 @@ PETG or ASA is better than PLA near a charger. `node_lid.stl` is already saved u
 
    Polarity matters. The board has reverse-polarity protection on its own electronics, but a
    reversed battery with a charger attached is still a short through the charger.
-4. Thermostat: fix it to the resistor body, wire it to J13, and desolder R11.
-5. PN532 to J11 (pin 1 is marked on the silkscreen):
-
-   | J11 pin | 1 | 2 | 3 | 4 | 5 | 6 |
-   |---|---|---|---|---|---|---|
-   | PN532 | VCC (3.3 V) | GND | SDA | SCL | IRQ | RSTO/RST |
-6. Fit the 15 A fuse last.
 
 ## 4. Flash and configure a node
 
@@ -189,12 +168,14 @@ To try the hub before any node exists, see the top of `hub/sim_node.py`.
 
 ## 7. Using it
 
-1. Name each battery: put it on a station, wait for its tag to appear in the Batteries table,
-   press Rename.
+1. Each node is a station, shown by its CAN id. After a station's first test it appears in the
+   history table, where Rename gives it a name (for example the charger bay it sits on).
 2. A test runs 5 seconds after a battery arrives, then every `auto` minutes, and whenever you
    press "Test now". Each test opens the charger relay, rests, pulls about 12 A for 0.1 s, and
    reconnects the charger.
-3. Compare each battery against its own history. A reading right after charging is lower than
+3. Results are logged per station, not per battery, so the history mixes whichever batteries
+   sat there. Use the latest verdict to pick a battery; to track one battery over time, note
+   its readings by hand or always test it on the same station. A reading right after charging is lower than
    one taken on a rested battery, and a cold battery reads higher than a warm one.
 4. "Download all tests (CSV)" at the bottom of the page gives you everything for a spreadsheet.
 
@@ -203,7 +184,6 @@ To try the hub before any node exists, see the top of `hub/sim_node.py`.
 | Id | Direction | Bytes |
 |---|---|---|
 | `0x100 + id` | node → hub, 1 Hz | state, flags, voltage mV (u16), current ×10 mA (i16, + = discharge), reserved (0x80), MOSFET °C (i8) |
-| `0x180 + id` | node → hub, on change and every 5 s | tag UID length (0 = none), then up to 7 UID bytes |
 | `0x200 + id` | node → hub, 3× after each test | IR ×0.01 mΩ (u16, 0xFFFF = failed), open volts mV (u16), loaded volts mV (u16), pulse current ×0.1 A (u8; error code if failed), sequence number (u8) |
 | `0x080 + id`, or `0x080` for all | hub → node | command: 1 test, 2 charger (byte 1: 1 = hold disconnected, 0 = normal), 3 blink LED, 4 clear fault |
 

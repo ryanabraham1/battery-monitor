@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Pit hub for the FRC battery IR monitor nodes.
 
-Listens on CAN, logs every IR test to SQLite keyed by the battery's NFC tag, and serves a
+Listens on CAN, logs every IR test to SQLite per charger station, and serves a
 small web page (http://<pi>:8080) showing live nodes, every battery's history, and buttons
 to trigger a test. Only dependency: python-can.
 
@@ -106,7 +106,7 @@ class Hub:
                     return                       # each result is sent three times
                 self.seen_seq[node] = seq
                 ok = ir != 0xFFFF
-                uid = n["uid"] or "untagged-node-%d" % node
+                uid = n["uid"] or "station-%d" % node
                 row = dict(ts=now, uid=uid, node=node, ir_mohm=ir / 100 if ok else None, v_open=vo / 1000,
                            v_load=vl / 1000, i_pulse=b6 / 10 if ok else None, err=0 if ok else b6)
                 n["last"] = row
@@ -132,7 +132,7 @@ class Hub:
                 online = now - n["seen"] < NODE_TIMEOUT
                 nodes.append(dict(id=nid, online=online, state=STATES.get(n["state"], "state %d" % n["state"]),
                                   fault=n["state"] >= 0x80, volts=n["volts"], amps=n["amps"],
-                                  t_fet=n["t_fet"], uid=n["uid"], nfc_ok=bool(n["flags"] & 4),
+                                  t_fet=n["t_fet"], uid=n["uid"] or "station-%d" % nid,
                                   ina_ok=bool(n["flags"] & 8), charger_connected=bool(n["flags"] & 2)))
         with self._db() as db:
             names = {r["uid"]: r["name"] for r in db.execute("SELECT uid, name FROM batteries")}
@@ -148,7 +148,7 @@ class Hub:
                                  ir=last["ir_mohm"] if last else None, verdict=verdict(last["ir_mohm"]) if last else "",
                                  charge=charge_percent(last["v_open"]) if last else None, trend=trend))
         for n in nodes:
-            n["name"] = names.get(n["uid"], "")
+            n["name"] = names.get(n["uid"], "")   # a station can be given a name on the page
             with self.lock:
                 last = self.nodes[n["id"]]["last"]
             if last:

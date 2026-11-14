@@ -42,11 +42,12 @@ def main():
     assert len(st["nodes"]) == 1 and st["nodes"][0]["id"] == 3, st
     n = st["nodes"][0]
     assert n["online"] and n["state"] == "charging" and abs(n["volts"] - 13.15) < 1e-6 and abs(n["amps"] + 4.2) < 1e-6, n
-    assert n["uid"] == "04A1B2C3D4E5F6" and n["t_fet"] == 27, n
+    assert n["uid"] == "station-3" and n["t_fet"] == 27, n
 
-    post("/api/name", {"uid": "04A1B2C3D4E5F6", "name": "Battery 7"})
+    post("/api/name", {"uid": "station-3", "name": "Battery 7"})
     post("/api/cmd", {"node": 3, "cmd": "test"})
     time.sleep(1.0)
+    post("/api/name", {"uid": "station-3", "name": "Battery 7"})   # the row exists once a test is logged
     st = get("/api/state")
     b = st["batteries"][0]
     assert b["name"] == "Battery 7" and b["tests"] == 1, b          # three copies of the result -> one row
@@ -55,7 +56,7 @@ def main():
 
     post("/api/cmd", {"node": 3, "cmd": "test"})
     time.sleep(1.0)
-    hist = get("/api/history?uid=04A1B2C3D4E5F6")
+    hist = get("/api/history?uid=station-3")
     assert len(hist) == 2 and hist[0]["node"] == 3 and abs(hist[0]["i_pulse"] - 12.3) < 1e-6, hist
 
     # a failed test is logged with its error but does not count as a result
