@@ -1,5 +1,8 @@
 # Setup guide: from boxes of parts to a working pit system
 
+**This is the rev B (120 A pulse) branch.** What changed from rev A and why is in
+[rev_b_120A.md](rev_b_120A.md); read its "Check before trusting it" list before the first pulse.
+
 Nothing here has been run on real hardware yet. The firmware compiles and the hub passes its
 simulated-node test, but expect some bring-up debugging on the first board.
 
@@ -11,7 +14,7 @@ are chained together with ordinary Ethernet patch cables carrying CAN.
  charger ──SB50──┐                       ┌──SB50── battery (NFC tag stuck on it)
                  │  CHG±           BATT± │
               ┌──┴───────── node ────────┴──┐
-              │  LOAD± ── 1 Ω 100 W resistor (+ thermostat → J13)
+              │  LOAD± ── load bank: 2 × 0.2 Ω 100 W in parallel (+ thermostat → J13)
               │  J11 ──── PN532 NFC reader (sits where the battery's tag lands)
               └── CAN (RJ45) ── next node ── … ── Raspberry Pi + CAN HAT
 ```
@@ -25,18 +28,21 @@ Prices are rough single-quantity figures from typical hobby suppliers, not quote
 | Item | Qty | Notes | ~USD |
 |---|---|---|---|
 | Assembled PCB from JLCPCB | 1 | `fab/` files; see README for ordering | 30–45 |
-| Hand-solder parts for the PCB | 1 set | The "hand-solder / THT" rows in `fab/ir_node_BOM_full.csv`: relay, fuse holder, MOSFET, RJ45 ×2, headers, JST-XH | (in BOM) |
-| ATO/ATC blade fuse, **15 A** | 1 | Plus spares | 0.50 |
-| Load resistor, **1 Ω 100 W**, aluminium-housed | 1 | Bolt it to a metal plate or heatsink | 6–10 |
+| Hand-solder parts for the PCB | 1 set | The "hand-solder / THT" rows in `fab/ir_node_BOM_full.csv`: relay, MOSFET, RJ45 ×2, headers, JST-XH | (in BOM) |
+| Bolt-down **MIDI fuse, 60 A**, 32 V or higher (30 mm hole spacing) | 1 | Plus a spare. Bolts across the two M5 studs on the board | 3–5 |
+| M5 × 20 bolts, 2 plain nuts + 1 lock nut each, washers | 2 sets | Fuse studs: bolt from below, nut, fuse, (ring terminal on the BATT+ stud), washer, lock nut | 1 |
+| Load resistor, **0.2 Ω 100 W**, aluminium-housed | 2 | Wired in parallel (0.1 Ω, about 105 A). Use three 0.25 Ω instead for about 120 A. Bolt them to a metal plate | 12–20 |
 | Thermostat, **normally closed**, opens at 70–80 °C (KSD9700 or KSD301 style) | 1 | Bolted or epoxied to the load resistor, wired to J13. **Desolder R11** (0 Ω, next to J13) when you fit it, or it does nothing | 2 |
 | JST-XH 2-pin plug with leads | 1 | For the thermostat (J13) | 0.50 |
 | PN532 NFC module (the common red "V3" board) | 1 | Set its mode switches/jumpers to **I2C**. Optional; without it results are logged per station instead of per battery | 6–9 |
 | Female–female jumper wires, 20–30 cm | 6 | PN532 to J11 | 1 |
-| Anderson SB50 housing + contacts for 10–12 AWG | 2 | One mates the battery, one mates the charger. Match the housing colour your team uses | 8 |
-| 10 AWG wire, red and black | ~0.5 m each | Battery and charger pigtails; keep the battery pigtail short | 4 |
-| 14 AWG wire | ~0.5 m | Node to load resistor | 1 |
-| Ring terminals, M4 (#8) stud | 6 | 4 for 10–12 AWG (yellow), 2 for 14–16 AWG (blue) | 2 |
-| M4 × 10 screws, nuts, lock washers | 6 each | Bolt the ring terminals to the PCB pads | 1 |
+| Anderson SB50 housing + 6 AWG contacts | 1 | Mates the battery | 5 |
+| Anderson SB50 housing + 10–12 AWG contacts | 1 | Mates the charger | 4 |
+| 6 AWG wire, red and black (8 AWG is acceptable) | ~0.3 m each | Battery pigtail; keep it short | 5 |
+| 8 AWG wire | ~0.6 m | Node to load bank and between the resistors | 3 |
+| 10–12 AWG wire, red and black | ~0.3 m each | Charger pigtail | 2 |
+| Ring terminals: 6 AWG with M5 hole (1), 6 AWG M4 (1), 8 AWG M4 (2 + resistor ends), 10–12 AWG M4 (2) | 1 set | BATT+ goes on the M5 fuse stud; everything else is M4 | 5 |
+| M4 × 10 screws, nuts, lock washers | 5 each | Bolt the ring terminals to the PCB pads | 1 |
 | M3 × 16 screws | 4 | Case: up through base and PCB into the lid | 0.50 |
 | Screws to mount the case and resistor plate | a few | Up to M4 through the case ears | 0.50 |
 | Ethernet patch cable (Cat5e or better) | 1 | To the next node or the hub. Length to suit; keep the whole chain under ~50 m | 2 |
@@ -74,7 +80,7 @@ PETG or ASA is better than PLA near a charger. `node_lid.stl` is already saved u
 
 - The four M3 × 16 screws go in from underneath: through the base, through the PCB's corner
   holes, and self-tap into the lid's corner posts. Don't overtighten.
-- Lid openings: fuse window, a window over the three status LEDs, two pin holes for BOOT and
+- Lid openings: a window over the fuse, a window over the three status LEDs, two pin holes for BOOT and
   RESET (press with a paperclip), and wire slots labelled on the lid. The LEDs sit on the board,
   so they are easiest to see from above.
 - `nfc_holder.stl` is sized for a 42.7 × 40.4 mm PN532 board; measure yours. The tag reads
@@ -91,9 +97,13 @@ PETG or ASA is better than PLA near a charger. `node_lid.stl` is already saved u
 
    | Pads | Goes to | Wire |
    |---|---|---|
-   | BATT+ / BATT− | SB50 that mates the **battery** | 10 AWG, as short as practical |
-   | CHG+ / CHG− | SB50 that mates the **charger** | 10 AWG |
-   | LOAD+ / LOAD− | the two lugs of the 1 Ω resistor | 14 AWG |
+   | BATT+ (M5 fuse stud) / BATT− | SB50 that mates the **battery** | 6 AWG, as short as practical |
+   | CHG+ / CHG− | SB50 that mates the **charger** | 10–12 AWG |
+   | LOAD+ / LOAD− | the load bank (resistors in parallel) | 8 AWG |
+
+   Fuse studs: M5 bolt up from under the board, a plain nut tightened onto the pad, then the
+   fuse, then (on the BATT+ stud) the battery ring terminal, washer and lock nut. The nut under
+   the fuse is a spacer so the fuse body clears the board.
 
    Polarity matters. The board has reverse-polarity protection on its own electronics, but a
    reversed battery with a charger attached is still a short through the charger.
@@ -103,7 +113,7 @@ PETG or ASA is better than PLA near a charger. `node_lid.stl` is already saved u
    | J11 pin | 1 | 2 | 3 | 4 | 5 | 6 |
    |---|---|---|---|---|---|---|
    | PN532 | VCC (3.3 V) | GND | SDA | SCL | IRQ | RSTO/RST |
-6. Fit the 15 A fuse last.
+6. Bolt the 60 A fuse on last.
 
 ## 4. Flash and configure a node
 
@@ -133,8 +143,8 @@ In the monitor, type `help`. The settings that matter:
 
 **Lead resistance.** The node measures voltage at its own BATT pads, so the pigtail and SB50
 contacts between the pads and the battery are included in the reading. Estimate it and enter it
-with `lead`: 10 AWG is about 3.3 mΩ per metre, both conductors count, plus roughly 0.2 mΩ per
-SB50 contact. A 30 cm pigtail is about 0.6 m × 3.3 + 0.4 ≈ 2.4 mΩ. If you have a tester you
+with `lead`: 6 AWG is about 1.3 mΩ per metre (8 AWG: 2.1), both conductors count, plus roughly
+0.2 mΩ per SB50 contact. A 30 cm 6 AWG pigtail is about 0.6 m × 1.3 + 0.4 ≈ 1.2 mΩ. If you have a tester you
 trust, measure one battery with both and adjust `lead` until they agree.
 
 **LED colours.** There are three LEDs (red, green, blue) side by side; "yellow" is red and
@@ -192,7 +202,7 @@ To try the hub before any node exists, see the top of `hub/sim_node.py`.
 1. Name each battery: put it on a station, wait for its tag to appear in the Batteries table,
    press Rename.
 2. A test runs 5 seconds after a battery arrives, then every `auto` minutes, and whenever you
-   press "Test now". Each test opens the charger relay, rests, pulls about 12 A for 0.1 s, and
+   press "Test now". Each test opens the charger relay, rests, pulls about 110 A for 0.1 s, and
    reconnects the charger.
 3. Compare each battery against its own history. A reading right after charging is lower than
    one taken on a rested battery, and a cold battery reads higher than a warm one.
@@ -204,7 +214,7 @@ To try the hub before any node exists, see the top of `hub/sim_node.py`.
 |---|---|---|
 | `0x100 + id` | node → hub, 1 Hz | state, flags, voltage mV (u16), current ×10 mA (i16, + = discharge), reserved (0x80), MOSFET °C (i8) |
 | `0x180 + id` | node → hub, on change and every 5 s | tag UID length (0 = none), then up to 7 UID bytes |
-| `0x200 + id` | node → hub, 3× after each test | IR ×0.01 mΩ (u16, 0xFFFF = failed), open volts mV (u16), loaded volts mV (u16), pulse current ×0.1 A (u8; error code if failed), sequence number (u8) |
+| `0x200 + id` | node → hub, 3× after each test | IR ×0.01 mΩ (u16, 0xFFFF = failed), open volts mV (u16), loaded volts mV (u16), pulse current in whole amps (u8; error code if failed), sequence number (u8) |
 | `0x080 + id`, or `0x080` for all | hub → node | command: 1 test, 2 charger (byte 1: 1 = hold disconnected, 0 = normal), 3 blink LED, 4 clear fault |
 
 State, flag and error values are in `firmware/include/config.h`.

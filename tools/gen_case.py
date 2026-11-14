@@ -32,7 +32,7 @@ GAP = 0.6         # PCB edge to inner wall
 WALL = 2.4
 FLOOR = 2.0
 STANDOFF = 6.0    # room under the PCB for through-hole leads and the M4 nuts/screw heads
-HEAD_ROOM = 27.0  # above the PCB: fuse in its holder (~22) and the TO-220 (~20) are the tallest
+HEAD_ROOM = 27.0  # above the PCB: the TO-220 (~20) and the M5 fuse studs (~19) are the tallest
 TOP = 2.0
 LIP = 2.0         # shiplap height between base and lid
 FIT = 0.25        # clearance on mating faces
@@ -83,13 +83,14 @@ OPENINGS = [
     ("bottom", 41.0, 13.0, 2.4, 6.0),    # USB-C: the plug overmold has to pass through the wall
     ("bottom", 58.57, 17.0, 0.4, 14.2),  # RJ45 J9
     ("bottom", 81.07, 17.0, 0.4, 14.2),  # RJ45 J10
-    ("left", 10.0, 9.5, 0.0, 9.5),       # BATT+
-    ("left", 27.0, 9.5, 0.0, 9.5),       # BATT-
+    ("left", 10.0, 11.0, 0.0, 11.0),     # BATT- (sized for 6-8 AWG)
+    ("left", 27.0, 11.0, 0.0, 11.0),     # BATT+
     ("left", 43.0, 5.0, 0.0, 7.0),       # thermostat lead (J13)
     ("right", 13.0, 9.5, 0.0, 9.5),      # CHG+
     ("right", 30.0, 9.5, 0.0, 9.5),      # CHG-
     ("right", 52.0, 12.0, 0.0, 5.0),     # PN532 6-wire lead
-    ("top", 58.75, 16.5, 0.0, 9.5),      # LOAD+ and LOAD-
+    ("top", 33.0, 11.0, 0.0, 11.0),      # LOAD-
+    ("top", 57.0, 11.0, 0.0, 11.0),      # LOAD+
 ]
 
 
@@ -145,17 +146,17 @@ def node_lid():
     m -= opening_cuts()
     # top face: LED window, fuse window, BOOT / RESET poke holes
     m -= pbox(18.8, 26.0, 34.4, 39.7, Z_LID_IN - 1, Z_TOP + 1)   # window over the three status LEDs
-    m -= pbox(16.0, 37.8, 5.6, 14.4, Z_LID_IN - 1, Z_TOP + 1)
+    m -= pbox(17.0, 35.0, 21.5, 32.5, Z_LID_IN - 1, Z_TOP + 1)   # window over the bolt-down fuse
     m -= pcyl(30.0, 56.0, 3.6, Z_LID_IN - 1, Z_TOP + 1)
     m -= pcyl(30.0, 64.0, 3.6, Z_LID_IN - 1, Z_TOP + 1)
     d = 0.6
-    for s, x, py, size, al in [("BATT +", 3, 10, 4.2, "left"), ("BATT −", 3, 27, 4.2, "left"),
+    for s, x, py, size, al in [("BATT −", 3, 10, 4.2, "left"), ("BATT +", 3, 18.5, 4.2, "left"),
                                ("CHG +", 97, 13, 4.2, "right"), ("CHG −", 97, 30, 4.2, "right"),
-                               ("LOAD", 58.75, 4.5, 4.2, "center"), ("FUSE 15A", 27, 18.5, 3.6, "center"),
+                               ("LOAD −", 33, 4.5, 4.0, "center"), ("LOAD +", 57, 4.5, 4.0, "center"), ("FUSE 60A", 46, 27, 3.6, "left"),
                                ("USB", 41, 75.5, 3.6, "center"), ("CAN", 58.57, 75.5, 3.6, "center"),
                                ("CAN", 81.07, 75.5, 3.6, "center"), ("NFC", 97, 52, 3.6, "right"),
                                ("BOOT", 33.5, 56, 3.0, "left"), ("RST", 33.5, 64, 3.0, "left"),
-                               ("TSW", 3, 43, 3.0, "left"), ("FRC BATTERY IR NODE", 50, 47, 4.6, "center")]:
+                               ("TSW", 3, 43, 3.0, "left"), ("FRC BATTERY IR NODE 120A", 52, 47, 4.4, "center")]:
         m -= text(s, x, BH - py, size, d, Z_TOP, al)
     return m
 
@@ -174,16 +175,18 @@ def pcb_mock():
         slab_bot -= k
     parts += [slab_top, slab_bot]
     parts.append(pbox(67.2, 80.4, 4.2, 33.7, z, z + 16.0))      # relay
-    parts.append(pbox(16.4, 37.4, 6.5, 13.5, z, z + 23.0))      # fuse holder + fuse
-    parts.append(pbox(57.3, 67.8, 42.1, 47.0, z, z + 20.5))     # TO-220
+    parts.append(pbox(15.0, 37.0, 20.8, 33.2, z + 3.0, z + 14.0))   # MIDI fuse body on its spacer nuts
+    parts.append(pbox(18.6, 23.5, 4.7, 15.3, z, z + 20.5))      # TO-220
+    parts.append(pbox(59.9, 67.1, 15.3, 24.7, z, z + 8.5))      # bulk capacitor
+    for x in (11, 41):
+        parts.append(pcyl(x, 27, 12.0, z, z + 19.5))            # M5 fuse studs with nuts and lug
     for c in (58.57, 81.07):
         parts.append(pbox(c - 8.0, c + 8.0, 62.5, 80.0, z, z + 13.6))   # RJ45
     parts.append(pbox(36.5, 45.5, 72.6, 80.0, z, z + 3.4))      # USB-C
-    for x, py in [(11, 10), (11, 27), (91, 13), (91, 30), (55, 10), (52, 38)]:
+    for x, py in [(11, 10), (33, 10), (57, 10), (91, 13), (91, 30)]:
         parts.append(pcyl(x, py, 10.0, z, z + 9.0))             # M4 lug + screw head / nut
     parts.append(pbox(87.2, 90.8, 45.2, 61.5, z, z + 17.0))     # PN532 header with Dupont housings
-    parts.append(pbox(26.0, 34.5, 25.6, 32.4, z, z + 11.0))     # JST-XH + plug
-    parts.append(pbox(35.0, 43.5, 41.6, 48.4, z, z + 11.0))
+    parts.append(pbox(35.0, 43.5, 41.6, 48.4, z, z + 11.0))     # JST-XH + plug (thermostat)
     parts.append(pbox(3.2, 11.9, 37.2, 40.8, z, z + 9.0))       # UART header
     return parts
 

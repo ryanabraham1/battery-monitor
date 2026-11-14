@@ -1,4 +1,4 @@
-// Pin map and fixed constants for the IR node, hardware rev A.
+// Pin map and fixed constants for the IR node, hardware rev B (120 A pulse load).
 // Must match tools/design.py (the schematic source).
 #pragma once
 #include <Arduino.h>
@@ -23,15 +23,16 @@
 
 // ---- measurement ----
 #define INA_ADDR         0x40
-#define SHUNT_OHMS       0.001f
+#define SHUNT_OHMS       0.0005f // INA226 full scale = 163 A
 #define PULSE_MS         100     // firmware pulse length
 #define PULSE_SKIP_MS    40      // ignore samples before this (lead inductance, driver rise, averaging window)
 #define BASELINE_SAMPLES 16
-#define MIN_TEST_GAP_MS  10000   // load resistor duty limit
+#define MIN_TEST_GAP_MS  30000   // duty limit for the load resistors and the 60 A fuse
 #define MIN_TEST_VOLTS   10.5f
 #define MAX_FET_TEMP_C   80
-#define DI_MIN_A         5.0f    // below this the load resistor / thermostat is open
-#define DI_MAX_A         20.0f
+#define DI_MIN_A         60.0f   // below this the load bank / thermostat is open or a lug is loose
+#define DI_MAX_A         155.0f
+#define STUCK_A          3.0f    // load current still flowing 60 ms after the pulse = stuck MOSFET
 #define BATT_PRESENT_V   9.0f
 
 // ---- CAN (250 kbit/s, 11-bit IDs, little-endian payloads) ----

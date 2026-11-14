@@ -108,7 +108,7 @@ class Hub:
                 ok = ir != 0xFFFF
                 uid = n["uid"] or "untagged-node-%d" % node
                 row = dict(ts=now, uid=uid, node=node, ir_mohm=ir / 100 if ok else None, v_open=vo / 1000,
-                           v_load=vl / 1000, i_pulse=b6 / 10 if ok else None, err=0 if ok else b6)
+                           v_load=vl / 1000, i_pulse=float(b6) if ok else None, err=0 if ok else b6)
                 n["last"] = row
                 with self._db() as db:
                     db.execute("INSERT OR IGNORE INTO batteries (uid, name, first_seen) VALUES (?, '', ?)", (uid, now))

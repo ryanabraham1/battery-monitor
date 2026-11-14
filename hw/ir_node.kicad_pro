@@ -326,6 +326,10 @@
       },
       {
         "netclass": "HighCurrent",
+        "pattern": "/CHG_K"
+      },
+      {
+        "netclass": "HighCurrent",
         "pattern": "/CHG_P"
       },
       {

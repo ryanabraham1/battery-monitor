@@ -56,7 +56,7 @@ def main():
     post("/api/cmd", {"node": 3, "cmd": "test"})
     time.sleep(1.0)
     hist = get("/api/history?uid=04A1B2C3D4E5F6")
-    assert len(hist) == 2 and hist[0]["node"] == 3 and abs(hist[0]["i_pulse"] - 12.3) < 1e-6, hist
+    assert len(hist) == 2 and hist[0]["node"] == 3 and abs(hist[0]["i_pulse"] - 112.0) < 1e-6, hist
 
     # a failed test is logged with its error but does not count as a result
     node.seq += 1

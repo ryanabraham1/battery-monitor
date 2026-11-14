@@ -35,9 +35,9 @@ class SimNode:
     def result(self):
         self.seq = (self.seq + 1) & 0xFF
         ir = self.ir + random.uniform(-0.2, 0.2)
-        i = 12.3
+        i = 112.0
         vo = 12.92
-        d = struct.pack("<HHHBB", round(ir * 100), round(vo * 1000), round((vo - ir / 1000 * i) * 1000), round(i * 10), self.seq)
+        d = struct.pack("<HHHBB", round(ir * 100), round(vo * 1000), round((vo - ir / 1000 * i) * 1000), round(i), self.seq)
         for _ in range(3):
             self.send(ID_RESULT, d)
 

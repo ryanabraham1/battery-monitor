@@ -1,9 +1,9 @@
-// FRC battery IR monitor node firmware (hardware rev A).
+// FRC battery IR monitor node firmware (hardware rev B, 120 A pulse load).
 //
 // What it does:
 //   - reads battery voltage/current from the INA226 across the 1 mOhm shunt
 //   - reads the battery's NFC tag UID with a PN532 (optional; works without one)
-//   - measures internal resistance: disconnect charger -> settle -> 100 ms ~12 A pulse ->
+//   - measures internal resistance: disconnect charger -> settle -> 100 ms ~110 A pulse ->
 //     IR = (V_open - V_loaded) / (I_loaded - I_open) - lead resistance
 //   - reports over CAN to the pit hub and takes commands from it
 //   - USB serial console for setup (type "help")
@@ -211,7 +211,7 @@ static void sendResult() {
   d[0] = ir & 0xFF; d[1] = ir >> 8;
   d[2] = vo & 0xFF; d[3] = vo >> 8;
   d[4] = vl & 0xFF; d[5] = vl >> 8;
-  d[6] = resultValid ? (uint8_t)constrain(lroundf(iPulse * 10), 0L, 255L) : (uint8_t)lastErr;
+  d[6] = resultValid ? (uint8_t)constrain(lroundf(iPulse), 0L, 255L) : (uint8_t)lastErr;   // whole amps on rev B
   d[7] = resultSeq;
   canSend(CAN_ID_RESULT + nodeId, d);
 }
@@ -263,7 +263,7 @@ static Err runPulse() {
   delay(60);
   float va, ia;
   bool gotAfter = inaWaitSample(va, ia, 50);
-  if (gotAfter && ia - i0 > 1.0f) return ERR_STUCK;
+  if (gotAfter && ia - i0 > STUCK_A) return ERR_STUCK;
   if (!fbSeen) return ERR_NO_PULSE;
   if (n < 3 || !gotAfter) return ERR_INA;
 

@@ -8,6 +8,7 @@ C0603 = "Capacitor_SMD:C_0603_1608Metric"
 C0805 = "Capacitor_SMD:C_0805_2012Metric"
 C1206 = "Capacitor_SMD:C_1206_3216Metric"
 M4PAD = "MountingHole:MountingHole_4.3mm_M4_Pad_Via"
+M5PAD = "MountingHole:MountingHole_5.3mm_M5_Pad_Via"
 TPAD = "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm"
 
 NC = None  # explicit no-connect
@@ -30,21 +31,22 @@ def C(ref, value, a, b, block, lcsc, fp=C0603, price=0.01, mpn=""):
 
 
 # ------------------------------------------------------------------ POWER PATH
-B = "1 High-current path: battery / fuse / shunt / charger relay / pulse load"
-P("J1", "Mechanical:MountingHole_Pad", "BATT+ (M4 lug)", M4PAD, {"1": "VBAT_RAW"}, B, asm="none")
+B = "1 High-current path: battery / bolt-down fuse / shunt / charger relay / 120 A pulse load"
+P("J1", "Mechanical:MountingHole_Pad", "BATT+ lug + MIDI fuse end A (M5 stud)", M5PAD, {"1": "VBAT_RAW"}, B, asm="none")
+P("J14", "Mechanical:MountingHole_Pad", "MIDI fuse end B (M5 stud)", M5PAD, {"1": "VBAT_F"}, B, asm="none")
 P("J2", "Mechanical:MountingHole_Pad", "BATT- (M4 lug)", M4PAD, {"1": "GND"}, B, asm="none")
 P("J3", "Mechanical:MountingHole_Pad", "CHG+ (M4 lug)", M4PAD, {"1": "CHG_P"}, B, asm="none")
 P("J4", "Mechanical:MountingHole_Pad", "CHG- (M4 lug)", M4PAD, {"1": "GND"}, B, asm="none")
 P("J5", "Mechanical:MountingHole_Pad", "LOAD+ (M4 lug)", M4PAD, {"1": "VNODE"}, B, asm="none")
 P("J6", "Mechanical:MountingHole_Pad", "LOAD- (M4 lug)", M4PAD, {"1": "LOAD_N"}, B, asm="none")
-P("F1", "Device:Fuse", "ATO 15A in FLR holder", "Fuse:FuseHolder_Blade_ATO_Littelfuse_FLR_178.6165",
-  {"1": "VBAT_RAW", "2": "VBAT_F"}, B, "C207061", "Littelfuse 178.6165.0002", "tht", 2.86)
-P("R1", "Device:R", "1mR 1% 2W 75ppm", "Resistor_SMD:R_2512_6332Metric",
-  {"1": "VBAT_F", "2": "VNODE"}, B, "C154668", "RALEC LR2512-22R001F4", price=0.105)
+P("F1", "Device:Fuse", "10A 125V 2410 (charger branch)", "Fuse:Fuse_Littelfuse-NANO2-451_453",
+  {"1": "CHG_K", "2": "CHG_P"}, B, "C136391", "JDT JFC2410-2100TS", price=0.081)
+P("R1", "Device:R", "0.5mR 1% 3W 75ppm", "Resistor_SMD:R_2512_6332Metric",
+  {"1": "VBAT_F", "2": "VNODE"}, B, "C710260", "TA-I RLM25FEGMR50M", price=0.073)
 P("D3", "Device:D_TVS", "SMBJ20A", "Diode_SMD:D_SMB", {"1": "VBAT_F", "2": "GND"}, B,
   "C151922", "BORN SMBJ20A", price=0.069)
 P("K1", "Relay:G2RL-1-E", "G2RL-1-E-DC12", "Relay_THT:Relay_SPDT_Omron_G2RL-1-E",
-  {"11": "VNODE", "12": "CHG_P", "14": NC, "A1": "VIN_PROT", "A2": "RLY_N"}, B,
+  {"11": "VNODE", "12": "CHG_K", "14": NC, "A1": "VIN_PROT", "A2": "RLY_N"}, B,
   "C58243", "Omron G2RL-1-E-DC12", "tht", 1.90)
 P("D1", "Device:D", "1N4148W", "Diode_SMD:D_SOD-123", {"1": "VIN_PROT", "2": "RLY_N"}, B,
   "C81598", "1N4148W", price=0.012)
@@ -53,8 +55,10 @@ P("Q2", "Transistor_FET:AO3400A", "AO3400A", "Package_TO_SOT_SMD:SOT-23",
 R("R3", "10k", "RELAY_EN", "GND", B, "C25804")
 P("Q1", "Transistor_FET:IRLB8721PBF", "IRLB3034PBF", "Package_TO_SOT_THT:TO-220-3_Vertical",
   {"1": "GATE", "2": "LOAD_N", "3": "GND"}, B, "C144151", "Infineon IRLB3034PBF", "tht", 1.02)
-P("D2", "Device:D_Schottky", "SS54", "Diode_SMD:D_SMA", {"1": "VNODE", "2": "LOAD_N"}, B,
-  "C22452", "MDD SS54", price=0.045)
+P("D2", "Device:D_Schottky", "SS56C", "Diode_SMD:D_SMC", {"1": "VNODE", "2": "LOAD_N"}, B,
+  "C24138", "MDD SS56C", price=0.095)
+P("C18", "Device:C_Polarized", "100u 35V", "Capacitor_SMD:CP_Elec_6.3x7.7", {"1": "VNODE", "2": "GND"}, B,
+  "C2836442", "KNSCHA RVT100UF35V67RV0034", price=0.038)
 
 # ------------------------------------------------------------------ MEASUREMENT
 B = "2 Measurement: INA226/INA228 (pin-compatible), Kelvin shunt + bus sense"
@@ -110,7 +114,7 @@ R("R16", "1k", "LOAD_PULSE", "LOAD_FB", B, "C21190")
 P("U6", "IRNode:UCC27517DBV", "UCC27517DBVR", "Package_TO_SOT_SMD:SOT-23-5",
   {"1": "VDRV", "2": "GND", "3": "LOAD_PULSE", "4": "GND", "5": "DRV_OUT"}, B,
   "C99395", "TI UCC27517DBVR", price=0.30)
-R("R12", "10R", "DRV_OUT", "GATE", B, "C22859")
+R("R12", "470R", "DRV_OUT", "GATE", B, "C23179")
 R("R13", "10k", "GATE", "GND", B, "C25804")
 
 # ------------------------------------------------------------------ MCU
@@ -189,19 +193,22 @@ for i in range(1, 5):
 POWER_FLAG_NETS = ["GND", "+3V3", "VIN_PROT", "VDRV"]
 
 # nets carried by copper pours, excluded from autorouting
-HC_NETS = ["VBAT_RAW", "VBAT_F", "VNODE", "CHG_P", "LOAD_N", "GND"]
+HC_NETS = ["VBAT_RAW", "VBAT_F", "VNODE", "CHG_K", "CHG_P", "LOAD_N", "GND"]
 
 NOTES = {
-    "1": "BATT+ -> F1 (15 A ATO) -> R1 1 mOhm shunt -> VNODE. Charger joins VNODE through K1 normally-closed "
-         "contact, so an unpowered/reset node leaves the charger CONNECTED. Q1 switches the off-board 1 Ohm "
-         "100 W load (LOAD+/LOAD-). D2 freewheels load-lead inductance. D3 TVS sits behind the fuse.",
+    "1": "REV B, 120 A PULSE. BATT+ ring terminal and one end of a bolt-down MIDI fuse (60 A, off-board part) "
+         "share stud J1; the other fuse end bolts to J14. J14 -> R1 0.5 mOhm shunt -> VNODE. Q1 switches the "
+         "off-board ~0.1 Ohm load (LOAD+/LOAD-) right next to the BATT- lug. D2 freewheels the load leads, C18 and "
+         "D3 absorb battery-lead inductance at turn-off. Charger joins VNODE through K1 normally-closed contact "
+         "and its own 10 A fuse F1, so an unpowered node leaves the charger CONNECTED.",
     "2": "U2 senses the shunt Kelvin-style (R4/R5/C1 filter). VBUS is taken from the BATT+ lug itself (ahead of "
          "the fuse) through R6. Address 0x40. INA228AIDGSR is a pin-compatible drop-in when back in stock.",
     "3": "D4 = reverse-polarity protection for logic. D5 lets USB power the MCU on the bench. U4 fixed 3.3 V "
          "buck, 3.8-32 V in. VDRV = zener-clamped 12 V rail for the gate driver; J13 lets a normally-closed "
          "thermostat on the load resistor cut gate drive (remove R11 when fitted).",
     "4": "LOAD_EN (GPIO6, pulled low) drives B and /CLR of the one-shot: Q follows LOAD_EN but is forced low "
-         "after t = R14*C10 ~ 220 ms even if firmware hangs with the pin high. U6 UVLO + R13 keep Q1 off at boot.",
+         "after t = R14*C10 ~ 220 ms even if firmware hangs with the pin high. U6 UVLO + R13 keep Q1 off at boot. "
+         "R12 = 470 R slows the gate so 120 A is switched over ~10 us instead of <1 us.",
     "5": "Native USB (GPIO19/20) for flashing + serial CLI. On-board MOSFET NTC divider 10k/10k to ADC1 (GPIO2). "
          "Status LEDs (red, green, blue 0603) are active-low. Wi-Fi/BLE are never initialised in firmware.",
     "6": "RJ45 pin 1 = CAN_H, 2 = CAN_L, 3 & 7 = GND (CiA 303-1). Both jacks are paralleled for daisy-chain. "
