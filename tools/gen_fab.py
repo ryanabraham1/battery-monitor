@@ -68,9 +68,30 @@ def bom():
         print("  %-28s %-3s %-30s %-10s %-9s stock %s" % (r[0][:28], r[1], (r[4] or r[3])[:30], r[6], r[7], r[8]))
 
 
+# JLC's part models for some packages sit at a different zero rotation from KiCad's footprints.
+# These offsets (degrees, counter-clockwise positive, added to KiCad's rotation) were measured in
+# JLC's placement viewer on 14 Nov 2026 by lining up each model's pin-1 dot with the footprint's
+# pin-1 marker. Footprints not listed (diodes, LEDs, passives, CP_Elec, ESP32-S3-WROOM-1, USB-C)
+# were checked and need no offset.
+JLC_ROT = {
+    "SOT-23": 180,
+    "SOT-23-5": 180,
+    "SOT-23-6": -90,
+    "TSOT-23-6": -90,
+    "SOIC-8_3.9x4.9mm_P1.27mm": -90,
+    "VSSOP-10_3x3mm_P0.5mm": -90,
+    "SSOP-8_2.95x2.8mm_P0.65mm": 180,
+}
+
+
+def jlc_rot(rot, fp):
+    r = (float(rot) + JLC_ROT.get(fp.split(":")[1], 0)) % 360
+    return "%.6f" % (r - 360 if r > 180 else r)
+
+
 def cpl():
-    b = pcbnew.LoadBoard(PCB)
     smt = {p["ref"] for p in D.PARTS if p["asm"] == "smt"}
+    fps = {p["ref"]: p["fp"] for p in D.PARTS}
     tmp = os.path.join(FAB, "_pos.csv")
     subprocess.run([CLI, "pcb", "export", "pos", "--format", "csv", "--units", "mm", "--side", "front",
                     "--exclude-dnp", "-o", tmp, PCB], check=True, capture_output=True)
@@ -78,7 +99,7 @@ def cpl():
     with open(tmp, encoding="utf8") as f:
         for r in csv.DictReader(f):
             if r["Ref"] in smt:
-                out.append([r["Ref"], r["PosX"], r["PosY"], "Top", r["Rot"]])
+                out.append([r["Ref"], r["PosX"], r["PosY"], "Top", jlc_rot(r["Rot"], fps[r["Ref"]])])
     os.remove(tmp)
     out.sort(key=lambda r: natural(r[0]))
     with open(os.path.join(FAB, "ir_node_CPL_JLC.csv"), "w", newline="", encoding="utf8") as f:
