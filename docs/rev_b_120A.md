@@ -95,6 +95,13 @@ it does, the load bank is absorbing over 1 kW.
    the fuse as a spacer (bolt from below, nut, fuse, ring terminal, washer, lock nut).
 5. **First power-up.** Do the first pulses with a current clamp or scope on the load lead and a
    bench supply or a known-good battery, and feel the load bank, fuse and MOSFET for warmth.
+6. **MOSFET legs.** The copper around the MOSFET is not the limit: simulated on the real pours, the whole
+   board's copper dissipates about 7.5 W during a 106 A pulse (0.75 J per pulse), which warms it by
+   roughly 2 °C, and the short neck at the drain pin stays within a fraction of a degree of the copper
+   around it. The narrowest conductor is the MOSFET's own drain and source legs, which I estimate warm
+   by 20–40 °C for the 100 ms of a pulse and cool in between (the IRLB3034 package is rated 195 A
+   continuous). Push the MOSFET fully down onto the board before soldering so the legs are as short
+   as possible, and fill the holes completely with solder.
 
 ## What you gain and what it costs
 
