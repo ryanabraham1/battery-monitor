@@ -58,7 +58,7 @@ Listed so nothing is forgotten; search links in case you run short.
 | Ring terminals: 6 AWG M5 ×1, 6 AWG M4 ×1, 8 AWG M4 ×2 plus resistor ends, 10–12 AWG M4 ×2 | 1 set | [Amazon](https://www.amazon.com/s?k=ring+terminal+assortment+6+AWG+8+AWG+M4+M5) |
 | M5 × 20 bolts, 2 plain nuts + 1 lock nut each, washers (fuse studs) | 2 sets | [Amazon](https://www.amazon.com/s?k=M5x20+bolt+nut+washer+assortment) |
 | M4 × 10 screws, nuts, lock washers (lug pads) | 5 sets | [Amazon](https://www.amazon.com/s?k=M4x10+screw+nut+washer+assortment) |
-| M3 × 16 screws (case) | 4 | [Amazon](https://www.amazon.com/s?k=M3x16+screw) |
+| #10-32 × 5/8 in screws (case) | 4 | [Amazon](https://www.amazon.com/s?k=10-32+x+5%2F8+socket+head+cap+screw) |
 | Ethernet patch cable to the next node | 1 | [Amazon](https://www.amazon.com/s?k=cat5e+patch+cable+3ft) |
 | Filament for the case (PETG or ASA), about 70 g | – | [Amazon](https://www.amazon.com/s?k=PETG+filament+1.75mm) |
 

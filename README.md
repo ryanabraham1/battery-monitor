@@ -19,7 +19,7 @@ or tested on real hardware yet: the firmware compiles and the hub passes a simul
 
 ## Board at a glance
 
-- 100 × 80 mm, 2 layers, 2 oz copper, four M3 mounting holes
+- 100 × 80 mm, 2 layers, 2 oz copper, four #10 mounting holes (0.196 in)
 - ESP32-S3 (radio unused), INA226 current/voltage monitor with a 0.5 mΩ Kelvin-sensed shunt
 - Charger relay on its normally-closed contact, so an unpowered node leaves the charger connected, with its own 10 A fuse
 - Pulse-load MOSFET with a hardware one-shot that cuts the load after ~220 ms even if firmware hangs
@@ -66,7 +66,7 @@ The PCB is one part of the system. The complete list with quantities, notes and 
 in [docs/setup.md](docs/setup.md#1-everything-to-buy). In short:
 
 - **Per node:** two 0.2 Ω 100 W resistors, normally-closed thermostat, 60 A MIDI fuse, two SB50 connectors, 6, 8 and 10 AWG wire, ring terminals, M4 and M5 hardware,
-  an Ethernet patch cable, four M3 × 16 screws, printed case
+  an Ethernet patch cable, four #10-32 × 5/8 in screws, printed case
 - **Hub (one per pit):** Raspberry Pi (3B+, 4 or 5), MCP2515 CAN HAT, microSD card, Pi power
   supply, one patch cable cut in half, printed tray
 

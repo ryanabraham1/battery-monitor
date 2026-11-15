@@ -176,7 +176,7 @@ def build(gnd_zones=True):
     missing = []
     for p in D.PARTS:
         lib, name = p["fp"].split(":")
-        fp = pcbnew.FootprintLoad(os.path.join(FPDIR, lib + ".pretty"), name)
+        fp = pcbnew.FootprintLoad(os.path.join(HW if lib == "IRNode" else FPDIR, lib + ".pretty"), name)
         fp.SetReference(p["ref"])
         fp.SetValue(p["value"])
         fp.SetFPID(pcbnew.LIB_ID(lib, name))

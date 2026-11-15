@@ -40,7 +40,7 @@ Prices are rough single-quantity figures from typical hobby suppliers, not quote
 | 10–12 AWG wire, red and black | ~0.3 m each | Charger pigtail | 2 |
 | Ring terminals: 6 AWG with M5 hole (1), 6 AWG M4 (1), 8 AWG M4 (2 + resistor ends), 10–12 AWG M4 (2) | 1 set | BATT+ goes on the M5 fuse stud; everything else is M4 | 5 |
 | M4 × 10 screws, nuts, lock washers | 5 each | Bolt the ring terminals to the PCB pads | 1 |
-| M3 × 16 screws | 4 | Case: up through base and PCB into the lid | 0.50 |
+| #10-32 × 5/8 in screws | 4 | Case: up through base and PCB into the lid | 0.50 |
 | Screws to mount the case and resistor plate | a few | Up to M4 through the case ears | 0.50 |
 | Ethernet patch cable (Cat5e or better) | 1 | To the next node or the hub. Length to suit; keep the whole chain under ~50 m | 2 |
 | Printed case | 1 | `case/node_base.stl`, `case/node_lid.stl`; ~70 g of PETG | 2 |
@@ -69,7 +69,7 @@ PETG or ASA is better than PLA near a charger. `node_lid.stl` is already saved u
 
 ![Case parts](../case/preview.png)
 
-- The four M3 × 16 screws go in from underneath: through the base, through the PCB's corner
+- The four #10-32 × 5/8 in screws go in from underneath: through the base, through the PCB's corner
   holes, and self-tap into the lid's corner posts. Don't overtighten.
 - Lid openings: a window over the fuse, a window over the three status LEDs, two pin holes for BOOT and
   RESET (press with a paperclip), and wire slots labelled on the lid. The LEDs sit on the board,

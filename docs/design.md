@@ -128,7 +128,7 @@ SBOS547; the 1.1 ms setting is from memory of the same table.
    negative side cannot be Kelvin-sensed. Measure one battery with a known-good reference
    (Battery Beak), store the difference, and subtract it. Being copper, it moves < 0.05 mΩ over 20 °C.
 
-## 6. Layout (100 × 80 mm, 2 layers, 2 oz, four M3 holes)
+## 6. Layout (100 × 80 mm, 2 layers, 2 oz, four #10 holes)
 
 - **Top band, left to right:** BATT+ / BATT− lugs → fuse → shunt → LOAD+ lug → relay → CHG+ / CHG− lugs.
   The whole charger and pulse path is poured on both layers.

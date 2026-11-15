@@ -21939,7 +21939,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "M3"
+		(property "Value" "#10 (0.196 in)"
 			(at 640.08 105.41 0)
 			(effects
 				(font
@@ -21948,7 +21948,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3"
+		(property "Footprint" "IRNode:MountingHole_4.98mm_No10"
 			(at 637.54 104.14 0)
 			(effects
 				(font
@@ -22004,7 +22004,7 @@
 	)
 	(symbol
 		(lib_id "Mechanical:MountingHole")
-		(at 655.32 104.14 0)
+		(at 668.02 104.14 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -22012,7 +22012,7 @@
 		(dnp no)
 		(uuid "c540f0eb-538e-58fa-80e2-b35136dba152")
 		(property "Reference" "H2"
-			(at 657.86 102.87 0)
+			(at 670.56 102.87 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22020,8 +22020,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "M3"
-			(at 657.86 105.41 0)
+		(property "Value" "#10 (0.196 in)"
+			(at 670.56 105.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22029,8 +22029,8 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3"
-			(at 655.32 104.14 0)
+		(property "Footprint" "IRNode:MountingHole_4.98mm_No10"
+			(at 668.02 104.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22039,7 +22039,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 655.32 104.14 0)
+			(at 668.02 104.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22048,7 +22048,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 655.32 104.14 0)
+			(at 668.02 104.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22057,7 +22057,7 @@
 			)
 		)
 		(property "LCSC" ""
-			(at 655.32 104.14 0)
+			(at 668.02 104.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22066,7 +22066,7 @@
 			)
 		)
 		(property "MPN" ""
-			(at 655.32 104.14 0)
+			(at 668.02 104.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22085,7 +22085,7 @@
 	)
 	(symbol
 		(lib_id "Mechanical:MountingHole")
-		(at 674.37 104.14 0)
+		(at 699.77 104.14 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -22093,7 +22093,7 @@
 		(dnp no)
 		(uuid "09f24395-3afc-5b0d-bede-abccfa93d546")
 		(property "Reference" "H3"
-			(at 676.91 102.87 0)
+			(at 702.31 102.87 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22101,8 +22101,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "M3"
-			(at 676.91 105.41 0)
+		(property "Value" "#10 (0.196 in)"
+			(at 702.31 105.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22110,8 +22110,8 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3"
-			(at 674.37 104.14 0)
+		(property "Footprint" "IRNode:MountingHole_4.98mm_No10"
+			(at 699.77 104.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22120,7 +22120,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 674.37 104.14 0)
+			(at 699.77 104.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22129,7 +22129,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 674.37 104.14 0)
+			(at 699.77 104.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22138,7 +22138,7 @@
 			)
 		)
 		(property "LCSC" ""
-			(at 674.37 104.14 0)
+			(at 699.77 104.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22147,7 +22147,7 @@
 			)
 		)
 		(property "MPN" ""
-			(at 674.37 104.14 0)
+			(at 699.77 104.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22166,7 +22166,7 @@
 	)
 	(symbol
 		(lib_id "Mechanical:MountingHole")
-		(at 693.42 104.14 0)
+		(at 730.25 104.14 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -22174,7 +22174,7 @@
 		(dnp no)
 		(uuid "718836df-31d1-5887-9f62-72b17411b3e8")
 		(property "Reference" "H4"
-			(at 695.96 102.87 0)
+			(at 732.79 102.87 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22182,8 +22182,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "M3"
-			(at 695.96 105.41 0)
+		(property "Value" "#10 (0.196 in)"
+			(at 732.79 105.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22191,8 +22191,8 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3"
-			(at 693.42 104.14 0)
+		(property "Footprint" "IRNode:MountingHole_4.98mm_No10"
+			(at 730.25 104.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22201,7 +22201,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 693.42 104.14 0)
+			(at 730.25 104.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22210,7 +22210,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 693.42 104.14 0)
+			(at 730.25 104.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22219,7 +22219,7 @@
 			)
 		)
 		(property "LCSC" ""
-			(at 693.42 104.14 0)
+			(at 730.25 104.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22228,7 +22228,7 @@
 			)
 		)
 		(property "MPN" ""
-			(at 693.42 104.14 0)
+			(at 730.25 104.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22269,7 +22269,7 @@
 		)
 		(uuid "396980da-e6e1-5782-8262-6b4c099219d5")
 	)
-	(text "Test points per spec; four M3 mounting holes."
+	(text "Test points per spec; four #10 mounting holes (0.196 in)."
 		(exclude_from_sim no)
 		(at 428 95.45 0)
 		(effects
@@ -22278,7 +22278,7 @@
 			)
 			(justify left top)
 		)
-		(uuid "3c479585-6280-5fd2-ab3a-4adc1d1b87d9")
+		(uuid "50e4e4bd-6887-5309-8393-409249cfd81b")
 	)
 	(sheet_instances
 		(path "/"
