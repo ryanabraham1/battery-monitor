@@ -1,0 +1,65 @@
+(footprint "MountingHole_4.98mm_No10"
+	(version 20241229)
+	(generator "ir_node")
+	(layer "F.Cu")
+	(descr "Mounting hole for a #10 screw, 0.196 in (4.98 mm) clearance, no annular ring")
+	(tags "mountinghole #10")
+	(property "Reference" "REF**"
+		(at 0 -6.25 0)
+		(layer "F.SilkS")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "MountingHole_4.98mm_No10"
+		(at 0 6.25 0)
+		(layer "F.Fab")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(attr exclude_from_pos_files exclude_from_bom)
+	(fp_circle
+		(center 0 0)
+		(end 4.75 0)
+		(stroke
+			(width 0.15)
+			(type solid)
+		)
+		(fill no)
+		(layer "Cmts.User")
+	)
+	(fp_circle
+		(center 0 0)
+		(end 5.0 0)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(fill no)
+		(layer "F.CrtYd")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 0 0)
+		(layer "F.Fab")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "" np_thru_hole circle
+		(at 0 0)
+		(size 4.98 4.98)
+		(drill 4.98)
+		(layers "*.Cu" "*.Mask")
+	)
+	(embedded_fonts no)
+)

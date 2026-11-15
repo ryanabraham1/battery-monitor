@@ -22,7 +22,7 @@ JLC's standard assembly does not place these through-hole parts. Add them to an
 
 | Ref | Part | Qty per board | Each | Buy |
 |---|---|---|---|---|
-| F1 | Littelfuse 178.6165.0002 | 1 | $2.86 | [C207061](https://www.lcsc.com/search?q=C207061) |
+| F1 | Littelfuse 178.6165.0002 | 1 | $2.32 | [C207061](https://www.lcsc.com/search?q=C207061) |
 | J7 | 2.54mm header 1x3 | 1 | $0.02 | [Amazon](https://www.amazon.com/s?k=2.54mm+male+pin+header+strip) |
 | J9 | Connfly DS1128-09-S8B8X | 1 | $0.57 | [C86578](https://www.lcsc.com/search?q=C86578) |
 | J10 | Connfly DS1128-09-S8B8X | 1 | $0.57 | [C86578](https://www.lcsc.com/search?q=C86578) |
@@ -33,7 +33,7 @@ JLC's standard assembly does not place these through-hole parts. Add them to an
 | Q1 | Infineon IRLB3034PBF | 1 | $1.02 | [C144151](https://www.lcsc.com/search?q=C144151) or [Digi-Key](https://www.digikey.com/en/products/result?keywords=IRLB3034PBF) (buy genuine Infineon) |
 | JP1 cap | 2.54 mm jumper cap, for the last node on the CAN chain only | 1 per system | $0.05 | [Amazon](https://www.amazon.com/s?k=2.54mm+jumper+cap) |
 
-Hand-solder parts total: **$6.99 per board**.
+Hand-solder parts total: **$6.44 per board**.
 
 ## 3. Off-board parts, per node
 
@@ -56,7 +56,7 @@ Listed so nothing is forgotten; search links in case you run short.
 | 14 AWG wire (load resistor) | ~0.5 m | [Amazon](https://www.amazon.com/s?k=14+AWG+silicone+wire) |
 | Ring terminals, M4 stud: 10–12 AWG ×4, 14–16 AWG ×2 | 6 | [Amazon](https://www.amazon.com/s?k=ring+terminal+M4+10-12+AWG) |
 | M4 × 10 screws, nuts, lock washers (lug pads) | 6 sets | [Amazon](https://www.amazon.com/s?k=M4x10+screw+nut+washer+assortment) |
-| M3 × 16 screws (case) | 4 | [Amazon](https://www.amazon.com/s?k=M3x16+screw) |
+| #10-32 × 5/8 in screws (case) | 4 | [Amazon](https://www.amazon.com/s?k=10-32+x+5%2F8+socket+head+cap+screw) |
 | Ethernet patch cable to the next node | 1 | [Amazon](https://www.amazon.com/s?k=cat5e+patch+cable+3ft) |
 | Filament for the case (PETG or ASA), about 70 g | – | [Amazon](https://www.amazon.com/s?k=PETG+filament+1.75mm) |
 

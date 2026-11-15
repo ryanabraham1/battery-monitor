@@ -184,7 +184,7 @@ B = "7 Test points and mounting"
 for i, net in enumerate(["VBAT_RAW", "INA_INP", "INA_INN", "GATE", "+3V3", "CANH", "CANL", "GND", "LOAD_PULSE"], 1):
     P("TP%d" % i, "Connector:TestPoint", net, TPAD, {"1": net}, B, asm="none")
 for i in range(1, 5):
-    P("H%d" % i, "Mechanical:MountingHole", "M3", "MountingHole:MountingHole_3.2mm_M3", {}, B, asm="none")
+    P("H%d" % i, "Mechanical:MountingHole", "#10 (0.196 in)", "IRNode:MountingHole_4.98mm_No10", {}, B, asm="none")
 
 POWER_FLAG_NETS = ["GND", "+3V3", "VIN_PROT", "VDRV"]
 
@@ -206,5 +206,5 @@ NOTES = {
          "Status LEDs (red, green, blue 0603) are active-low. Wi-Fi/BLE are never initialised in firmware.",
     "6": "RJ45 pin 1 = CAN_H, 2 = CAN_L, 3 & 7 = GND (CiA 303-1). Both jacks are paralleled for daisy-chain. "
          "Fit JP1 on the two end nodes only. J11 takes an optional PN532 NFC reader (3V3, I2C1, IRQ, RST).",
-    "7": "Test points per spec; four M3 mounting holes.",
+    "7": "Test points per spec; four #10 mounting holes (0.196 in).",
 }

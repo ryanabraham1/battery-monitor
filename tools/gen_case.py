@@ -9,7 +9,7 @@ Parts (all print without supports, flat face on the bed, in the orientation they
     nfc_holder.stl  optional: shallow tray for a PN532 breakout; the tag is read through its floor
     pi_tray.stl     open tray for the Raspberry Pi + CAN HAT
 
-Four M3x16 screws go up through the base and the PCB and self-tap into posts in the lid.
+Four #10-32 x 5/8 in screws go up through the base and the PCB and self-tap into posts in the lid.
 All positions come from the board layout (tools/gen_pcb.py); PCB y runs downward, so
 case y = 80 - pcb y.
 """
@@ -36,11 +36,11 @@ HEAD_ROOM = 27.0  # above the PCB: fuse in its holder (~22) and the TO-220 (~20)
 TOP = 2.0
 LIP = 2.0         # shiplap height between base and lid
 FIT = 0.25        # clearance on mating faces
-SCREW_CLEAR = 3.4
-SCREW_HEAD = 6.4
-SCREW_PILOT = 2.6  # M3 self-tapping into the lid posts
-POST_D = 7.0
-EAR_HOLE = 4.5
+SCREW_CLEAR = 5.2
+SCREW_HEAD = 10.0
+SCREW_PILOT = 4.2  # #10-32 self-tapping into the lid posts
+POST_D = 9.5
+EAR_HOLE = 5.2
 
 Z_PCB_TOP = FLOOR + STANDOFF + PCB_T          # split line between base and lid
 Z_LID_IN = Z_PCB_TOP + HEAD_ROOM              # underside of the lid top
@@ -123,7 +123,7 @@ def node_base():
         m -= cyl((ex0 + ex1) / 2, BH / 2, EAR_HOLE, -1, 4)
     for hx, hy in HOLES:
         m -= pcyl(hx, hy, SCREW_CLEAR, -1, Z_PCB_TOP)
-        m -= pcyl(hx, hy, SCREW_HEAD, -1, 3.0)      # counterbore: head sits 3 mm up, 5 mm of plastic under the PCB
+        m -= pcyl(hx, hy, SCREW_HEAD, -1, 5.0)      # counterbore: head sits 5 mm up, 3 mm of plastic under the PCB
     return m - opening_cuts()
 
 
@@ -142,6 +142,10 @@ def node_lid():
         m += pbox(-GAP - 0.1 if hx < 50 else hx - 3.5, hx + 3.5 if hx < 50 else BW + GAP + 0.1,
                   -GAP - 0.1 if hy < 40 else hy, hy if hy < 40 else BH + GAP + 0.1, Z_PCB_TOP + LIP + FIT, Z_LID_IN + 0.1)
         m -= pcyl(hx, hy, SCREW_PILOT, Z_PCB_TOP, Z_PCB_TOP + 14)
+    # the posts are wider than the corner gap: clear the base lip out of them again
+    m -= box(-GAP - WALL / 2 - FIT, BW + GAP + WALL / 2 + FIT, -GAP - WALL / 2 - FIT, BH + GAP + WALL / 2 + FIT,
+             Z_PCB_TOP - 1, Z_PCB_TOP + LIP + FIT) \
+        - box(-GAP + FIT, BW + GAP - FIT, -GAP + FIT, BH + GAP - FIT, Z_PCB_TOP - 2, Z_PCB_TOP + LIP + FIT + 1)
     m -= opening_cuts()
     # top face: LED window, fuse window, BOOT / RESET poke holes
     m -= pbox(18.8, 26.0, 34.4, 39.7, Z_LID_IN - 1, Z_TOP + 1)   # window over the three status LEDs
@@ -167,9 +171,9 @@ def pcb_mock():
     slab_top = pbox(0, BW, 0, BH, z, z + 3.5)               # generic SMT height everywhere
     slab_bot = pbox(0, BW, 0, BH, z - PCB_T - 4.5, z - PCB_T)  # leads and nuts underneath
     for hx, hy in HOLES:
-        k = pbox(hx - 4.05, hx + 4.05, hy - 4.05, hy + 4.05, 0, 60)
-        k += pbox(-1 if hx < 50 else hx - 4.05, hx + 4.05 if hx < 50 else BW + 1,
-                  -1 if hy < 40 else hy - 4.05, hy + 4.05 if hy < 40 else BH + 1, 0, 60)
+        k = pbox(hx - 4.85, hx + 4.85, hy - 4.85, hy + 4.85, 0, 60)
+        k += pbox(-1 if hx < 50 else hx - 4.85, hx + 4.85 if hx < 50 else BW + 1,
+                  -1 if hy < 40 else hy - 4.85, hy + 4.85 if hy < 40 else BH + 1, 0, 60)
         slab_top -= k
         slab_bot -= k
     parts += [slab_top, slab_bot]

@@ -34,7 +34,7 @@ Prices are rough single-quantity figures from typical hobby suppliers, not quote
 | 14 AWG wire | ~0.5 m | Node to load resistor | 1 |
 | Ring terminals, M4 (#8) stud | 6 | 4 for 10–12 AWG (yellow), 2 for 14–16 AWG (blue) | 2 |
 | M4 × 10 screws, nuts, lock washers | 6 each | Bolt the ring terminals to the PCB pads | 1 |
-| M3 × 16 screws | 4 | Case: up through base and PCB into the lid | 0.50 |
+| #10-32 × 5/8 in screws | 4 | Case: up through base and PCB into the lid | 0.50 |
 | Screws to mount the case and resistor plate | a few | Up to M4 through the case ears | 0.50 |
 | Ethernet patch cable (Cat5e or better) | 1 | To the next node or the hub. Length to suit; keep the whole chain under ~50 m | 2 |
 | Printed case | 1 | `case/node_base.stl`, `case/node_lid.stl`; ~70 g of PETG | 2 |
@@ -63,7 +63,7 @@ PETG or ASA is better than PLA near a charger. `node_lid.stl` is already saved u
 
 ![Case parts](../case/preview.png)
 
-- The four M3 × 16 screws go in from underneath: through the base, through the PCB's corner
+- The four #10-32 × 5/8 in screws go in from underneath: through the base, through the PCB's corner
   holes, and self-tap into the lid's corner posts. Don't overtighten.
 - Lid openings: fuse window, a window over the three status LEDs, two pin holes for BOOT and
   RESET (press with a paperclip), and wire slots labelled on the lid. The LEDs sit on the board,

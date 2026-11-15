@@ -122,7 +122,7 @@ else:
     w("| 14 AWG wire (load resistor) | ~0.5 m | %s |" % amazon("14 AWG silicone wire"))
     w("| Ring terminals, M4 stud: 10–12 AWG ×4, 14–16 AWG ×2 | 6 | %s |" % amazon("ring terminal M4 10-12 AWG"))
     w("| M4 × 10 screws, nuts, lock washers (lug pads) | 6 sets | %s |" % amazon("M4x10 screw nut washer assortment"))
-w("| M3 × 16 screws (case) | 4 | %s |" % amazon("M3x16 screw"))
+w("| #10-32 × 5/8 in screws (case) | 4 | %s |" % amazon("10-32 x 5/8 socket head cap screw"))
 w("| Ethernet patch cable to the next node | 1 | %s |" % amazon("cat5e patch cable 3ft"))
 w("| Filament for the case (PETG or ASA), about 70 g | – | %s |" % amazon("PETG filament 1.75mm"))
 w("")
