@@ -189,7 +189,7 @@ def pcb_mock():
     parts.append(pbox(36.5, 45.5, 72.6, 80.0, z, z + 3.4))      # USB-C
     for x, py in [(11, 10), (33, 10), (57, 10), (91, 13), (91, 30)]:
         parts.append(pcyl(x, py, 10.0, z, z + 9.0))             # M4 lug + screw head / nut
-    parts.append(pbox(87.2, 90.8, 45.2, 61.5, z, z + 17.0))     # PN532 header with Dupont housings
+    parts.append(pbox(85.95, 92.8, 43.0, 61.5, z, z + 11.0))    # PN532 JST-XH (J11) + plug
     parts.append(pbox(35.0, 43.5, 41.6, 48.4, z, z + 11.0))     # JST-XH + plug (thermostat)
     parts.append(pbox(3.2, 11.9, 37.2, 40.8, z, z + 9.0))       # UART header
     return parts

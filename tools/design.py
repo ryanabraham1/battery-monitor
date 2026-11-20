@@ -161,7 +161,7 @@ R("R24", "10k", "+3V3", "NTC_FET", B, "C25804")
 C("C17", "100n", "NTC_FET", "GND", B, "C14663")
 
 # ------------------------------------------------------------------ CAN + NFC
-B = "6 CAN bus (2x RJ45 daisy-chain, CiA-303 pinout, jumper termination) + optional NFC header"
+B = "6 CAN bus (2x RJ45 daisy-chain, CiA-303 pinout, jumper termination) + optional NFC connector (JST-XH)"
 P("U3", "Interface_CAN_LIN:SN65HVD230", "SN65HVD230DR", "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm",
   {"1": "CAN_TX", "2": "GND", "3": "+3V3", "4": "CAN_RX", "5": NC, "6": "CANL", "7": "CANH", "8": "GND"}, B,
   "C12084", "TI SN65HVD230DR", price=0.56)
@@ -177,9 +177,9 @@ P("J9", "Connector:RJ45_LED_Shielded", "CAN A", "Connector_RJ:RJ45_Connfly_DS112
   dict(RJ), B, "C86578", "Connfly DS1128-09-S8B8X", "tht", 0.57)
 P("J10", "Connector:RJ45_LED_Shielded", "CAN B", "Connector_RJ:RJ45_Connfly_DS1128-09-S8xx-S_Horizontal",
   dict(RJ), B, "C86578", "Connfly DS1128-09-S8B8X", "tht", 0.57)
-P("J11", "Connector_Generic:Conn_01x06", "optional: PN532 NFC reader (I2C)", "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical",
+P("J11", "Connector_Generic:Conn_01x06", "optional: PN532 NFC reader (I2C)", "Connector_JST:JST_XH_B6B-XH-A_1x06_P2.50mm_Vertical",
   {"1": "+3V3", "2": "GND", "3": "NFC_SDA", "4": "NFC_SCL", "5": "NFC_IRQ", "6": "NFC_RST"}, B,
-  "", "2.54mm header 1x6 (optional)", "tht", 0.03)
+  "C5663", "XH-6A (optional)", "tht", 0.021)
 R("R21", "4k7", "+3V3", "NFC_SDA", B, "C23162")
 R("R22", "4k7", "+3V3", "NFC_SCL", B, "C23162")
 
@@ -212,6 +212,6 @@ NOTES = {
     "5": "Native USB (GPIO19/20) for flashing + serial CLI. On-board MOSFET NTC divider 10k/10k to ADC1 (GPIO2). "
          "Status LEDs (red, green, blue 0603) are active-low. Wi-Fi/BLE are never initialised in firmware.",
     "6": "RJ45 pin 1 = CAN_H, 2 = CAN_L, 3 & 7 = GND (CiA 303-1). Both jacks are paralleled for daisy-chain. "
-         "Fit JP1 on the two end nodes only. J11 takes an optional PN532 NFC reader (3V3, I2C1, IRQ, RST).",
+         "Fit JP1 on the two end nodes only. J11 (JST-XH 6-pin) takes an optional PN532 NFC reader (3V3, I2C1, IRQ, RST).",
     "7": "Test points per spec; four #10 mounting holes (0.196 in).",
 }

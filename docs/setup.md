@@ -205,8 +205,8 @@ reader to any node; the firmware detects it at power-up and nothing else changes
 | Item | Qty | Notes | ~USD |
 |---|---|---|---|
 | PN532 NFC module (the common red "V3" board) | 1 per node | Set its mode switches/jumpers to **I2C** | 6–9 |
-| 1×6 pin header, 2.54 mm | 1 per node | Solder into J11 | 0.05 |
-| Female–female jumper wires, 20–30 cm | 6 per node | PN532 to J11 | 1 |
+| JST-XH 6-pin socket (XH-6A / B6B-XH-A) | 1 per node | Solder into J11 | 0.05 |
+| JST-XH 6-pin plug with leads, 20–30 cm | 1 per node | Plugs into J11; solder the six leads to the PN532 pads. Wire by pin number, not by lead colour | 1 |
 | NFC sticker tag, NTAG213 or NTAG215 | 1 per battery | Stick it where it lands on the reader. Use "on-metal" tags if range is poor | 0.30–1 |
 
 | J11 pin | 1 | 2 | 3 | 4 | 5 | 6 |

@@ -19945,7 +19945,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical"
+		(property "Footprint" "Connector_JST:JST_XH_B6B-XH-A_1x06_P2.50mm_Vertical"
 			(at 572.77 46.99 0)
 			(effects
 				(font
@@ -19972,7 +19972,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C5663"
 			(at 572.77 46.99 0)
 			(effects
 				(font
@@ -19981,7 +19981,7 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" "2.54mm header 1x6 (optional)"
+		(property "MPN" "XH-6A (optional)"
 			(at 572.77 46.99 0)
 			(effects
 				(font
@@ -20951,9 +20951,9 @@
 		(fill
 			(type none)
 		)
-		(uuid "9b415f95-9b5b-5454-8353-88fec8b86166")
+		(uuid "248c0c91-ddc1-5242-a503-b94fa0331df9")
 	)
-	(text "BLOCK 6 CAN bus (2x RJ45 daisy-chain, CiA-303 pinout, jumper termination) + optional NFC header"
+	(text "BLOCK 6 CAN bus (2x RJ45 daisy-chain, CiA-303 pinout, jumper termination) + optional NFC connector (JST-XH)"
 		(exclude_from_sim no)
 		(at 428 17.5 0)
 		(effects
@@ -20965,7 +20965,7 @@
 		)
 		(uuid "fd5283b9-279e-57fc-a70f-07e959f9d345")
 	)
-	(text "RJ45 pin 1 = CAN_H, 2 = CAN_L, 3 & 7 = GND (CiA 303-1). Both jacks are paralleled for daisy-chain. Fit JP1 on the two end nodes only. J11 takes an\noptional PN532 NFC reader (3V3, I2C1, IRQ, RST)."
+	(text "RJ45 pin 1 = CAN_H, 2 = CAN_L, 3 & 7 = GND (CiA 303-1). Both jacks are paralleled for daisy-chain. Fit JP1 on the two end nodes only. J11 (JST-XH\n6-pin) takes an optional PN532 NFC reader (3V3, I2C1, IRQ, RST)."
 		(exclude_from_sim no)
 		(at 428 23 0)
 		(effects
