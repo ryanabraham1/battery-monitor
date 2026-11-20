@@ -21,7 +21,7 @@ or tested on real hardware yet: the firmware compiles and the hub passes a simul
 - ESP32-S3 (radio unused), INA226 current/voltage monitor with a 1 mΩ Kelvin-sensed shunt
 - Charger relay on its normally-closed contact, so an unpowered node leaves the charger connected
 - Pulse-load MOSFET with a hardware one-shot that cuts the load after ~220 ms even if firmware hangs
-- Two RJ45 jacks for daisy-chained CAN, USB-C for flashing and serial, header for an optional PN532 NFC reader
+- Two RJ45 jacks for daisy-chained CAN, USB-C for flashing and serial, JST-XH socket for an optional PN532 NFC reader
 - Six M4 bolt-down lug pads: BATT±, CHG±, LOAD± (off-board 1 Ω 100 W resistor)
 
 | Top copper | Bottom copper |

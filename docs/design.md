@@ -53,7 +53,7 @@ All stock figures were read live from JLCPCB's parts library on 2026-11-14 (`too
 | Protection | SMBJ20A, SS34 (reverse polarity), USBLC6-2SC6, PESD2CAN | C151922 / C8678 / C7519 / C2687131 | all > 40 k | SS34 in series with the logic supply only — the power path stays diode-free. |
 | Fuse holder | Littelfuse 178.6165.0002 | C207061 | 1 311 | Exact KiCad library footprint. |
 | Power terminals | 6× M4 plated lug pads with via rings | — | — | Bolt a 10 AWG ring lug straight to the board (M4 screw + nut). No connector to source; current limit is the copper, not a terminal block. |
-| NFC | 6-pin header to a PN532 breakout | — | — | I2C on its own bus (I2C1) so PN532 clock-stretching can't disturb INA timing. |
+| NFC | 6-pin JST-XH (J11) to a PN532 breakout | — | — | I2C on its own bus (I2C1) so PN532 clock-stretching can't disturb INA timing. |
 
 ## 4. Power and thermal calculations
 
