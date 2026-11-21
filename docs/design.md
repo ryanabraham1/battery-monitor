@@ -49,7 +49,7 @@ All stock figures were read live from JLCPCB's parts library on 2026-11-14 (`too
 | HW timeout | SN74LVC1G123DCTR one-shot | C123302 | 7 497 | Retriggerable monostable gates the driver; see §4.4. |
 | Charger disconnect | Omron G2RL-1-E-DC12 on the **NC** contact | C58243 | 900 | **Relay over back-to-back MOSFETs**: de-energised = charger connected with zero firmware involvement, true isolation, no leakage, nothing to latch up when the charger voltage is above/below the battery. Coil only powered during a test (~35 s). |
 | Relay driver | AO3400A + 1N4148W flyback | C20917 / C81598 | 1 M+ | Basic parts. |
-| Buck | AP63203WU-7, fixed 3.3 V, 3.8–32 V in | C780769 | 5 483 | No feedback divider, 32 V rating covers the TVS clamp. |
+| Buck | AP63201WU-7, adjustable, 500 kHz, 3.8–32 V in | C2071044 | 7 412 | Replaces the fixed-3.3 V AP63203WU-7 (same pinout), which went out of stock at JLC in Nov 2026. R28/R29 (31.6 k / 10 k) set 3.33 V; L1 is 10 µH for the lower switching frequency. 32 V rating covers the TVS clamp. |
 | Protection | SMBJ20A, SS34 (reverse polarity), USBLC6-2SC6, PESD2CAN | C151922 / C8678 / C7519 / C2687131 | all > 40 k | SS34 in series with the logic supply only — the power path stays diode-free. |
 | Fuse holder | Littelfuse 178.6165.0002 | C207061 | 1 311 | Exact KiCad library footprint. |
 | Power terminals | 6× M4 plated lug pads with via rings | — | — | Bolt a 10 AWG ring lug straight to the board (M4 screw + nut). No connector to source; current limit is the copper, not a terminal block. |

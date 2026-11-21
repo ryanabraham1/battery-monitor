@@ -12,7 +12,7 @@ assembly. Order page: [jlcpcb.com](https://jlcpcb.com/). JLC supplies and places
 
 | What | Per board | Notes |
 |---|---|---|
-| Parts JLC places (41 part types) | $10.00 | 19 of them are "extended" parts, about $3 each per order |
+| Parts JLC places (42 part types) | $9.90 | 20 of them are "extended" parts, about $3 each per order |
 | Bare board | about $3–4 at 10 pcs | 100 × 80 mm, 2 layers, **2 oz copper** (needed for the 120 A pulse and 60 A fuse) |
 
 ## 2. Hand-solder parts for the board
@@ -23,8 +23,8 @@ JLC's standard assembly does not place these through-hole parts. Add them to an
 | Ref | Part | Qty per board | Each | Buy |
 |---|---|---|---|---|
 | J7 | 2.54mm header 1x3 | 1 | $0.02 | [Amazon](https://www.amazon.com/s?k=2.54mm+male+pin+header+strip) |
-| J9 | Connfly DS1128-09-S8B8X | 1 | $0.56 | [C86578](https://www.lcsc.com/search?q=C86578) |
-| J10 | Connfly DS1128-09-S8B8X | 1 | $0.56 | [C86578](https://www.lcsc.com/search?q=C86578) |
+| J9 | Connfly DS1128-09-S8B8X | 1 | $0.57 | [C86578](https://www.lcsc.com/search?q=C86578) |
+| J10 | Connfly DS1128-09-S8B8X | 1 | $0.57 | [C86578](https://www.lcsc.com/search?q=C86578) |
 | J11 | XH-6A (optional) | 1 | $0.02 | [C5663](https://www.lcsc.com/search?q=C5663) |
 | J13 | XH-2A | 1 | $0.01 | [C20079](https://www.lcsc.com/search?q=C20079) |
 | JP1 | 2.54mm header 1x2 + jumper cap | 1 | $0.02 | [Amazon](https://www.amazon.com/s?k=2.54mm+male+pin+header+strip) |
@@ -32,7 +32,7 @@ JLC's standard assembly does not place these through-hole parts. Add them to an
 | Q1 | Infineon IRLB3034PBF | 1 | $1.02 | [C144151](https://www.lcsc.com/search?q=C144151) or [Digi-Key](https://www.digikey.com/en/products/result?keywords=IRLB3034PBF) (buy genuine Infineon) |
 | JP1 cap | 2.54 mm jumper cap, for the last node on the CAN chain only | 1 per system | $0.05 | [Amazon](https://www.amazon.com/s?k=2.54mm+jumper+cap) |
 
-Hand-solder parts total: **$3.78 per board**.
+Hand-solder parts total: **$3.79 per board**.
 
 ## 3. Off-board parts, per node
 

@@ -84,12 +84,15 @@ P("D5", "Device:D_Schottky", "B5819W", "Diode_SMD:D_SOD-123", {"1": "VIN_PROT", 
   "C8598", "B5819W", price=0.026)
 C("C4", "10u 50V", "VIN_PROT", "GND", B, "C13585", C1206, 0.121)
 C("C5", "10u 50V", "VIN_PROT", "GND", B, "C13585", C1206, 0.121)
-P("U4", "Regulator_Switching:AP63203WU", "AP63203WU-7", "Package_TO_SOT_SMD:TSOT-23-6",
-  {"1": "+3V3", "2": "VIN_PROT", "3": "VIN_PROT", "4": "GND", "5": "BUCK_SW", "6": "BUCK_BST"}, B,
-  "C780769", "Diodes AP63203WU-7", price=1.34)
+P("U4", "Regulator_Switching:AP63201WU", "AP63201WU-7", "Package_TO_SOT_SMD:TSOT-23-6",
+  {"1": "BUCK_FB", "2": "VIN_PROT", "3": "VIN_PROT", "4": "GND", "5": "BUCK_SW", "6": "BUCK_BST"}, B,
+  "C2071044", "Diodes AP63201WU-7", price=1.22)
+# feedback divider: 0.8 V * (1 + 31.6k/10k) = 3.33 V
+R("R28", "31k6", "+3V3", "BUCK_FB", B, "C25967")
+R("R29", "10k", "BUCK_FB", "GND", B, "C25804")
 C("C6", "100n", "BUCK_BST", "BUCK_SW", B, "C14663")
-P("L1", "Device:L", "4.7uH 2A", "Inductor_SMD:L_Sunlord_SWPA4030S", {"1": "BUCK_SW", "2": "+3V3"}, B,
-  "C57269", "Sunlord SWPA4030S4R7MT", price=0.057)
+P("L1", "Device:L", "10uH 1.5A", "Inductor_SMD:L_Sunlord_SWPA4030S", {"1": "BUCK_SW", "2": "+3V3"}, B,
+  "C38117", "Sunlord SWPA4030S100MT", price=0.049)
 C("C7", "22u 25V", "+3V3", "GND", B, "C45783", C0805, 0.108)
 C("C8", "22u 25V", "+3V3", "GND", B, "C45783", C0805, 0.108)
 R("R10", "470R", "VIN_PROT", "VDRV_IN", B, "C23179")
@@ -203,8 +206,8 @@ NOTES = {
          "and its own 10 A fuse F1, so an unpowered node leaves the charger CONNECTED.",
     "2": "U2 senses the shunt Kelvin-style (R4/R5/C1 filter). VBUS is taken from the BATT+ lug itself (ahead of "
          "the fuse) through R6. Address 0x40. INA228AIDGSR is a pin-compatible drop-in when back in stock.",
-    "3": "D4 = reverse-polarity protection for logic. D5 lets USB power the MCU on the bench. U4 fixed 3.3 V "
-         "buck, 3.8-32 V in. VDRV = zener-clamped 12 V rail for the gate driver. A normally-closed thermostat on the load resistor plugs into J13 and "
+    "3": "D4 = reverse-polarity protection for logic. D5 lets USB power the MCU on the bench. U4 500 kHz buck set to "
+         "3.33 V by R28/R29, 3.8-32 V in. VDRV = zener-clamped 12 V rail for the gate driver. A normally-closed thermostat on the load resistor plugs into J13 and "
          "breaks that rail when hot, so no pulse can fire. R11 (not fitted) bypasses it for bench work.",
     "4": "LOAD_EN (GPIO6, pulled low) drives B and /CLR of the one-shot: Q follows LOAD_EN but is forced low "
          "after t = R14*C10 ~ 220 ms even if firmware hangs with the pin high. U6 UVLO + R13 keep Q1 off at boot. "
