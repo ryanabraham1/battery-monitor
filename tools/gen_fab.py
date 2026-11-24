@@ -130,7 +130,7 @@ PCBWAY_ALT = {
     "C2687131": "Nexperia PESD2CAN,215",
     "C2286": "Any 0603 red LED", "C12624": "Any 0603 green LED", "C2288": "Any 0603 blue LED",
     "C136391": "Littelfuse 0451010.MRL (10 A 125 V fast, Nano2)",
-    "C710260": "0.5 mOhm 1% 2512 metal-strip shunt, 3 W or more, 75 ppm/K or better; ask before substituting",
+    "C710260": "Bourns CSS2H-2512R-L500F (0.5 mOhm 1% 6 W 50 ppm) if it fits the 2512 pads; ask before any other substitute",
     "C2892547": "Any 0603 NTC 10 k 1% with B25/50 = 3950 K (firmware uses B = 3950)",
     "C38117": "Ask before substituting (10 uH shielded, Isat 1.5 A or more, same 4 x 4 mm pads)",
     "C20079": "JST B2B-XH-A", "C5663": "JST B6B-XH-A",
@@ -138,9 +138,9 @@ PCBWAY_ALT = {
 for _c in ("C25804", "C23164", "C22859", "C23162", "C23179", "C25803", "C21190", "C23186", "C22787", "C22775", "C25967"):
     PCBWAY_ALT[_c] = ANY_R
 PCBWAY_NOTE = {
-    "Q1": "Push fully down onto the board before soldering so the legs are as short as possible (120 A pulse)",
+    "Q1": "Obsolete at Infineon but still stocked (Arrow, Rochester, LCSC). Push fully down onto the board before soldering so the legs are as short as possible (120 A pulse)",
     "J11": "Optional connector; fit it",
-    "K1": "12 V coil, 16 A high-capacity version (-E)",
+    "K1": "12 V coil, 16 A high-capacity version (-E). Distributors list it as G2RL-1-E DC12, maker Aratas (formerly Omron)",
     "U1": "4 MB flash version (N4). N8/N16 also work",
     "R1": "Current-sense shunt: value and tolerance are critical",
 }
