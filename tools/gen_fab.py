@@ -1,5 +1,5 @@
 """Produce fab/ outputs: BOM (full + JLC format, with live stock), CPL, Gerbers + drill zip, renders."""
-import os, sys, csv, subprocess, zipfile, glob, shutil
+import os, re, sys, csv, subprocess, zipfile, glob, shutil
 sys.path.insert(0, os.path.dirname(__file__))
 import wx
 wx.DisableAsserts()
@@ -108,6 +108,105 @@ def cpl():
         w.writerows(out)
     missing = smt - {r[0] for r in out}
     print("CPL rows:", len(out), "missing:", missing)
+
+
+# ---------------------------------------------------------------------------------- PCBWay
+# PCBWay buys parts by manufacturer part number and its engineers review the BOM by hand, so the
+# BOM carries manufacturer + MPN, the LCSC number as a sourcing reference, and what may be
+# substituted. Keyed by LCSC number.
+ANY_R = "Any 0603 1% thick-film resistor of the same value"
+ANY_C = "Any X5R/X7R MLCC of the same value, voltage and package"
+NO_SUB = "No substitute without asking"
+PCBWAY_ALT = {
+    "C14663": ANY_C, "C13585": ANY_C, "C45783": ANY_C, "C15849": ANY_C,
+    "C23630": "Any X5R/X7R 2.2 uF 10% 16 V or higher 0603 (sets the one-shot timeout)",
+    "C2836442": "Panasonic EEE-FK1V101XP, or any 100 uF 35 V 6.3 x 7.7 mm SMD electrolytic",
+    "C81598": "Any 1N4148W, SOD-123",
+    "C24138": "Any SS56 (5 A 60 V Schottky), SMC / DO-214AB",
+    "C151922": "Any SMBJ20A (unidirectional), e.g. Littelfuse SMBJ20A",
+    "C8678": "Any SS34 (3 A 40 V Schottky), SMA / DO-214AC",
+    "C8598": "Any B5819W / 1N5819HW, SOD-123",
+    "C43491": "Any BZT52C12 (12 V zener), SOD-123",
+    "C2687131": "Nexperia PESD2CAN,215",
+    "C2286": "Any 0603 red LED", "C12624": "Any 0603 green LED", "C2288": "Any 0603 blue LED",
+    "C136391": "Littelfuse 0451010.MRL (10 A 125 V fast, Nano2)",
+    "C710260": "0.5 mOhm 1% 2512 metal-strip shunt, 3 W or more, 75 ppm/K or better; ask before substituting",
+    "C2892547": "Any 0603 NTC 10 k 1% with B25/50 = 3950 K (firmware uses B = 3950)",
+    "C38117": "Ask before substituting (10 uH shielded, Isat 1.5 A or more, same 4 x 4 mm pads)",
+    "C20079": "JST B2B-XH-A", "C5663": "JST B6B-XH-A",
+}
+for _c in ("C25804", "C23164", "C22859", "C23162", "C23179", "C25803", "C21190", "C23186", "C22787", "C22775", "C25967"):
+    PCBWAY_ALT[_c] = ANY_R
+PCBWAY_NOTE = {
+    "Q1": "Push fully down onto the board before soldering so the legs are as short as possible (120 A pulse)",
+    "J11": "Optional connector; fit it",
+    "K1": "12 V coil, 16 A high-capacity version (-E)",
+    "U1": "4 MB flash version (N4). N8/N16 also work",
+    "R1": "Current-sense shunt: value and tolerance are critical",
+}
+HEADERS = {"J7": ("Generic", "2.54 mm male pin header, 1x3, straight", "PinHeader 1x03 P2.54mm"),
+           "JP1": ("Generic", "2.54 mm male pin header, 1x2, straight (no jumper cap)", "PinHeader 1x02 P2.54mm")}
+
+
+def pcbway():
+    """fab/pcbway/: BOM by manufacturer part number (SMT only, and a version that also has the
+    through-hole parts) and a placement file with KiCad's own rotations (no JLC offsets)."""
+    out = os.path.join(FAB, "pcbway")
+    os.makedirs(out, exist_ok=True)
+    groups = {}
+    for p in D.PARTS:
+        if p["asm"] != "none":
+            groups.setdefault((p["value"], p["fp"], p["lcsc"], p["mpn"], p["asm"]), []).append(p)
+    rows, problems = [], []
+    for (value, fp, lcsc, mpn, asm), ps in sorted(groups.items(), key=lambda kv: natural(kv[1][0]["ref"])):
+        refs = sorted((p["ref"] for p in ps), key=natural)
+        plain = re.sub(r"\s*\(.*?\)", "", value)
+        mfr, part, desc, stock = "", mpn, plain, ""
+        if lcsc:
+            hit = [c for c in jlc.search(lcsc, 5) if c.get("componentCode") == lcsc]
+            if hit:
+                r = jlc.row(hit[0])
+                mfr, part, stock = r["brand"], r["mpn"], r["stock"]
+                desc = "%s; %s" % (plain, r["desc"].replace("插件", "THT")) if r["desc"] else plain
+            if not hit or not stock or stock < 500 and asm == "smt":
+                problems.append((refs[0], lcsc, stock))
+        else:
+            mfr, part, _ = HEADERS[refs[0]]
+            desc = plain
+        note = PCBWAY_NOTE.get(refs[0], "")
+        rows.append([",".join(refs), len(refs), mfr, part, desc, fp.split(":")[1], "SMD" if asm == "smt" else "THT",
+                     lcsc, PCBWAY_ALT.get(lcsc, "Generic part, any make" if not lcsc else NO_SUB), note])
+    hdr = ["Item", "Designator", "Qty", "Manufacturer", "Mfg Part #", "Description / Value", "Package / Footprint",
+           "Type", "LCSC # (reference)", "Acceptable substitute", "Notes"]
+    for name, keep in (("ir_node_BOM_PCBWay.csv", ("SMD",)), ("ir_node_BOM_PCBWay_with_THT.csv", ("SMD", "THT"))):
+        with open(os.path.join(out, name), "w", newline="", encoding="utf-8-sig") as f:
+            w = csv.writer(f)
+            w.writerow(hdr)
+            for i, r in enumerate([r for r in rows if r[6] in keep], 1):
+                w.writerow([i] + r)
+
+    val = {p["ref"]: p["value"] for p in D.PARTS}
+    fps = {p["ref"]: p["fp"].split(":")[1] for p in D.PARTS}
+    smt = {p["ref"] for p in D.PARTS if p["asm"] == "smt"}
+    tmp = os.path.join(out, "_pos.csv")
+    subprocess.run([CLI, "pcb", "export", "pos", "--format", "csv", "--units", "mm", "--side", "front",
+                    "--exclude-dnp", "-o", tmp, PCB], check=True, capture_output=True)
+    pos = []
+    with open(tmp, encoding="utf8") as f:
+        for r in csv.DictReader(f):
+            if r["Ref"] in smt:
+                pos.append([r["Ref"], val[r["Ref"]], fps[r["Ref"]], r["PosX"], r["PosY"], r["Rot"], "Top"])
+    os.remove(tmp)
+    pos.sort(key=lambda r: natural(r[0]))
+    with open(os.path.join(out, "ir_node_CPL_PCBWay.csv"), "w", newline="", encoding="utf8") as f:
+        w = csv.writer(f)
+        w.writerow(["Designator", "Value", "Package", "Mid X (mm)", "Mid Y (mm)", "Rotation", "Layer"])
+        w.writerows(pos)
+    bom_refs = {x for r in rows if r[6] == "SMD" for x in r[0].split(",")}
+    print("PCBWay BOM lines: %d SMD + %d THT; CPL rows %d; BOM/CPL designator mismatch: %s" % (
+        sum(1 for r in rows if r[6] == "SMD"), sum(1 for r in rows if r[6] == "THT"), len(pos),
+        sorted(bom_refs ^ {r[0] for r in pos}) or "none"))
+    print("not found / low stock at LCSC-JLC:", problems or "none")
 
 
 def gerbers():

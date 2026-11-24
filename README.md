@@ -42,23 +42,33 @@ Full schematic: [hw/ir_node_schematic.pdf](hw/ir_node_schematic.pdf).
 |---|---|
 | `docs/design.md` | Phase 1 design document: deviations, part choices, calculations, accuracy budget, open questions |
 | `hw/` | KiCad 9 project: `ir_node.kicad_pro`, `.kicad_sch`, `.kicad_pcb`, schematic PDF, ERC and DRC reports |
-| `fab/` | `ir_node_gerbers.zip` (Gerbers + drill), `ir_node_BOM_JLC.csv`, `ir_node_CPL_JLC.csv`, `ir_node_BOM_full.csv` |
+| `fab/` | `ir_node_gerbers.zip` (Gerbers + drill), `pcbway/` (PCBWay BOM and placement file), `ir_node_BOM_full.csv`, JLCPCB BOM and CPL |
 | `renders/` | PNG previews of each copper layer and 3D views |
 | `firmware/` | ESP32-S3 node firmware (PlatformIO, Arduino framework) |
 | `hub/` | Raspberry Pi hub: CAN logger, SQLite history, web page, installer, simulated node and test |
 | `case/` | Printable STLs: node base and lid, Pi tray, optional NFC reader holder |
 | `tools/` | The Python scripts that generate everything (run with KiCad's bundled Python) |
 
-## Ordering (JLCPCB)
+## Ordering (PCBWay)
 
-1. Upload `fab/ir_node_gerbers.zip`. Options: 2 layers, 1.6 mm, **2 oz outer copper**, 100 × 80 mm.
-2. Enable PCB assembly, top side. Upload `ir_node_BOM_JLC.csv` and `ir_node_CPL_JLC.csv`.
-3. **Check every part's orientation in JLC's placement preview** before paying — rotation
-   conventions differ between KiCad and JLC for some packages (SOT-23, diodes, the ESP32 module).
-4. Hand-solder the through-hole parts listed as "hand-solder / THT" in `ir_node_BOM_full.csv`.
+1. PCB: upload `fab/ir_node_gerbers.zip`. Options: 2 layers, 100 × 80 mm, 1.6 mm FR-4,
+   **2 oz finished copper**, HASL lead-free or ENIG. Minimum track/space on the board is 0.25/0.20 mm
+   and the smallest via is 0.3 mm drill in a 0.7 mm pad.
+2. Assembly: turnkey, top side only, 67 SMD placements of 42 part types. Upload
+   `fab/pcbway/ir_node_BOM_PCBWay.csv` and `fab/pcbway/ir_node_CPL_PCBWay.csv`.
+   To have PCBWay also fit the through-hole parts (relay, MOSFET, RJ45 ×2, JST-XH ×2, headers),
+   upload `ir_node_BOM_PCBWay_with_THT.csv` instead and say so in the order notes.
+3. The BOM lists a manufacturer part number for every line, the LCSC number as a sourcing
+   reference, and which lines may be substituted. PCBWay emails about anything it wants to swap:
+   passives, diodes and LEDs are free to swap like for like; the ICs, shunt R1, inductor L1, USB-C
+   socket and buttons are not.
+4. The placement file uses KiCad's own rotations and coordinates (no fab-specific offsets). Pin 1
+   and polarity are marked on the silkscreen; `fab/layers_pdf/ir_node-F_Fab.pdf` is the assembly drawing.
+5. If you did not order through-hole assembly, hand-solder the "THT" rows of
+   `ir_node_BOM_PCBWay_with_THT.csv`.
 
-PCBWay or any other fab can use the same Gerber zip; give them `ir_node_BOM_full.csv`, which has
-manufacturer part numbers as well as LCSC numbers.
+The JLCPCB files (`ir_node_BOM_JLC.csv`, `ir_node_CPL_JLC.csv`, which carry JLC's rotation offsets)
+are still generated for reference.
 
 ## What else you need
 

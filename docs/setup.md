@@ -26,7 +26,7 @@ Prices are rough single-quantity figures from typical hobby suppliers, not quote
 
 | Item | Qty | Notes | ~USD |
 |---|---|---|---|
-| Assembled PCB from JLCPCB | 1 | `fab/` files; see README for ordering | 30–45 |
+| Assembled PCB from PCBWay | 1 | `fab/` files; see README for ordering | 30–45 |
 | Hand-solder parts for the PCB | 1 set | The "hand-solder / THT" rows in `fab/ir_node_BOM_full.csv`: relay, MOSFET, RJ45 ×2, headers | (in BOM) |
 | Bolt-down **MIDI fuse, 60 A**, 32 V or higher (30 mm hole spacing) | 1 | Plus a spare. Bolts across the two M5 studs on the board | 3–5 |
 | M5 × 20 bolts, 2 plain nuts + 1 lock nut each, washers | 2 sets | Fuse studs: bolt from below, nut, fuse, (ring terminal on the BATT+ stud), washer, lock nut | 1 |
@@ -79,7 +79,7 @@ PETG or ASA is better than PLA near a charger. `node_lid.stl` is already saved u
 
 ## 3. Build a node
 
-1. Solder the through-hole parts onto the JLC-assembled board.
+1. Solder the through-hole parts onto the assembled board.
 2. Before connecting a battery: plug in USB-C only and flash the firmware (section 4). The
    console should answer `status`.
 3. Crimp ring terminals and bolt the wires on. The lid and the PCB silkscreen label every pad:
